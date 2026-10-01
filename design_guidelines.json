@@ -1,0 +1,240 @@
+{
+  "project_name": "Meme Arcade Landing Page",
+  "app_type": "landing_page",
+  "theme": "dark_degen_cyberpunk",
+  "design_principles": [
+    "Fusion over Imitation: Retro arcade aesthetics mixed with sleek 2026 dark crypto terminal glassmorphism and high-voltage neon glow.",
+    "Emotion First: High-adrenaline degen energy — evoke excitement, trust, low-risk high-reward thrill, and community pride.",
+    "Content is King: Direct storytelling for 3 flagship games ($BUN, $CASHCAT, $FEFER) with live badges and instant CTA friction-free links.",
+    "Contrast & Motion: Deep obsidian dark canvas (#06070B, #0B0E17) punctuated by Electric Lime (#10B981), Cyber Purple (#A855F7), Neon Gold (#F59E0B), and Hot Magenta (#EC4899)."
+  ],
+  "typography": {
+    "font_pairing_strategy": "The Editorial Future / Degen Cyberpunk",
+    "headline_font": "Orbitron, Space Grotesk, or Syncopate for bold futuristic arcade headings",
+    "body_font": "Plus Jakarta Sans, Inter, or JetBrains Mono for razor-sharp legibility and telemetry data",
+    "font_cdn_links": [
+      "https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap"
+    ],
+    "scale": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight uppercase",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight uppercase",
+      "h3": "text-xl sm:text-2xl font-bold tracking-tight",
+      "h4": "text-lg sm:text-xl font-semibold",
+      "body": "text-base text-slate-300 leading-relaxed",
+      "caption": "text-xs font-mono uppercase tracking-widest text-slate-400"
+    }
+  },
+  "colors": {
+    "background_primary": "#06070C",
+    "background_secondary": "#0D111C",
+    "background_card": "#131826",
+    "background_card_hover": "#1C2337",
+    "text_primary": "#F8FAFC",
+    "text_secondary": "#94A3B8",
+    "text_muted": "#64748B",
+    "accents": {
+      "neon_green": "#10B981",
+      "neon_purple": "#A855F7",
+      "neon_pink": "#EC4899",
+      "neon_amber": "#F59E0B",
+      "neon_cyan": "#06B6D4"
+    },
+    "border_subtle": "rgba(255, 255, 255, 0.08)",
+    "border_glowing": "rgba(168, 85, 247, 0.4)",
+    "gradients": {
+      "hero_glow": "radial-gradient(circle at 50% -20%, rgba(168, 85, 247, 0.25), rgba(16, 185, 129, 0.1), transparent 70%)",
+      "card_stake": "linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%)",
+      "card_game_1": "linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.05))",
+      "card_game_2": "linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.05))",
+      "card_game_3": "linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.05))"
+    }
+  },
+  "svg_logo_mark": {
+    "concept": "A sleek pixelated cyberpunk arcade machine crowned with a glowing digital token / joystick pulse",
+    "description": "An custom inline SVG featuring a stylized 'M' & 'A' arcade joystick cabinet surrounded by a glowing neon polygon circle",
+    "data_testid": "meme-arcade-brand-logo"
+  },
+  "layout_and_sections": [
+    {
+      "section_id": "header_nav",
+      "name": "Navigation Bar",
+      "style": "Glassmorphism header (backdrop-blur-xl bg-[#06070C]/80 border-b border-white/10 sticky top-0 z-50)",
+      "elements": [
+        "Brand Logo (SVG Icon + 'MEME ARCADE' glowing text mark)",
+        "Desktop Nav Links: Games Showcase, Low-Risk Yield, Tokenomics, Socials",
+        "CTA Button 1: 'Stake ARCADE' - Animated glowing button, pulse wave effect, links out to https://staking.memearcade (data-testid='stake-arcade-nav-btn')",
+        "CTA Button 2: 'TRADE' - Dimmed/Disabled state (opacity-50 cursor-not-allowed bg-slate-800 text-slate-500 border border-slate-700, data-testid='trade-nav-btn')"
+      ]
+    },
+    {
+      "section_id": "hero",
+      "name": "Kinetic Hero Section",
+      "style": "Full-width immersive dark terminal backdrop with interactive particle canvas grid and subtle pulsing radial ambient glow",
+      "elements": [
+        "Live Protocol Banner Badge: 'LOWEST RISK TO HIGH REWARD RATIO ON THE PLANET ⚡'",
+        "Main Headline: 'WIN BIG IN YOUR FAVORITE MEMECOINS.'",
+        "Sub-headline: 'Meme Arcade gives the strongest meme communities a high-pot crypto money game. Play hard, win native memecoins, zero rug friction.'",
+        "Hero CTAs: 'Stake $ARCADE' (Primary kinetic pulse button) + 'Explore 3 Live Games' (Secondary outline glow button)",
+        "Protocol Live Telemetry Bar: Total Pot Pool Value ($2,480,910+), Games Live (3/3), Active Players (48,290+), Payout Multiplier (Up to 100x)"
+      ]
+    },
+    {
+      "section_id": "editorial_marquee",
+      "name": "Kinetic Editorial Marquee",
+      "style": "Subtle low-contrast neon scrolling ticker band with tracking-widest uppercase monospaced text",
+      "content": "★ $BUN • PLAY WITH $BUN ★ $CASHCAT • STREET CATS VS MONEY MICE ★ $FEFER • FEFERDREAM APOCALYSE ★ LOWEST RISK TO HIGH REWARD ★ STAKE $ARCADE ★ COMMUNITY ROBINHOOD ★ COMMUNITY STABLE"
+    },
+    {
+      "section_id": "games_exhibition",
+      "name": "Games Exhibition Showcase (3 Key Offerings)",
+      "style": "Bento Grid Mode A (3 distinct high-impact interactive cards with tracing glow borders and custom status badges)",
+      "cards": [
+        {
+          "game_id": "bundlecat_all_stars",
+          "title": "BundleCat All Stars",
+          "tagline": "Play with $BUN. Win big.",
+          "blurb": "All Star Cats hold off NBA All Stars in a high-stakes arcade showdown.",
+          "memecoin_ticker": "$BUN",
+          "community_badge": "community Robinhood",
+          "badge_style": "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30",
+          "status": "LIVE",
+          "status_color": "text-emerald-400 bg-emerald-400/20",
+          "link_url": "https://allstars.memearcade.com",
+          "image_url": "https://images.unsplash.com/photo-1583634852966-130c15654305?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "card_theme": "neon_pink_purple",
+          "data_testid": "game-card-bundlecat-all-stars"
+        },
+        {
+          "game_id": "cash_cats_money_mice",
+          "title": "Cash Cats 'n' Money Mice",
+          "tagline": "Play with $Cashcat. Win big.",
+          "blurb": "Street-cat crews versus suited mouse syndicates. Play for the pot in $cashcat memecoin.",
+          "memecoin_ticker": "$CASHCAT",
+          "community_badge": "community Robinhood",
+          "badge_style": "bg-amber-500/10 text-amber-400 border border-amber-500/30",
+          "status": "LIVE",
+          "status_color": "text-amber-400 bg-amber-400/20",
+          "link_url": "https://cashcats.memearcade.com",
+          "image_url": "https://images.unsplash.com/photo-1528870884180-5649b20f6435?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "card_theme": "neon_amber_red",
+          "data_testid": "game-card-cash-cats-money-mice"
+        },
+        {
+          "game_id": "fefer_dream_apocalypse",
+          "title": "Fefer Dream (Feferdream Apocalypse)",
+          "tagline": "Play for $fefer. Win the pot.",
+          "blurb": "Dino hunters take on apocalyptic Dragons to avoid destruction and win the $fefer memecoin pot.",
+          "memecoin_ticker": "$FEFER",
+          "community_badge": "community Stable",
+          "badge_style": "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30",
+          "status": "LIVE",
+          "status_color": "text-cyan-400 bg-cyan-400/20",
+          "link_url": "https://feferdream.memearcade.com",
+          "image_url": "https://images.unsplash.com/photo-1759273622466-bed6428ad957?crop=entropy&cs=srgb&fm=jpg&q=85",
+          "card_theme": "neon_cyan_emerald",
+          "data_testid": "game-card-fefer-dream"
+        }
+      ]
+    },
+    {
+      "section_id": "value_prop",
+      "name": "Value Proposition & Yield Engine",
+      "style": "Dark grid matrix highlighting why Meme Arcade dominates memecoin gaming",
+      "features": [
+        {
+          "title": "Lowest Risk : High Reward Ratio",
+          "description": "Calculated mathematical mechanics ensuring memecoin holders retain value while competing for explosive community pots."
+        },
+        {
+          "title": "Community Robinhood Model",
+          "description": "Redistributes game revenue directly to true community stakers and active arcade battlers rather than central dev wallets."
+        },
+        {
+          "title": "Multi-Token Native Pots",
+          "description": "Play natively in $BUN, $CASHCAT, $FEFER and receive payout directly in your community's native memecoin token."
+        }
+      ]
+    },
+    {
+      "section_id": "socials_community",
+      "name": "Social Hub & Community",
+      "style": "High-voltage CTA container with glowing glass cards for X and Telegram",
+      "links": [
+        {
+          "platform": "X (Twitter)",
+          "handle": "@myMemeArcade",
+          "url": "https://x.com/myMemeArcade",
+          "icon": "Twitter / X Icon",
+          "data_testid": "social-link-x"
+        },
+        {
+          "platform": "Telegram",
+          "handle": "t.me/memearcade",
+          "url": "https://t.me/memearcade",
+          "icon": "Telegram Icon",
+          "data_testid": "social-link-telegram"
+        }
+      ]
+    },
+    {
+      "section_id": "footer",
+      "name": "Arcade Footer",
+      "style": "Deep dark border-t border-white/10 py-12 px-6 bg-[#040508]",
+      "elements": [
+        "Brand mark & tagline",
+        "Contract Address snippet with 1-click copy feedback",
+        "Links to Staking, Games, Terms, Risk Disclaimer",
+        "Copyright © 2026 Meme Arcade. All rights reserved."
+      ]
+    }
+  ],
+  "motion_and_interactions": {
+    "library": "framer-motion",
+    "scroll_smooth": "lenis",
+    "animations": [
+      "Entrance stagger reveal for hero headings and game exhibition cards",
+      "Continuous subtle pulsing border glow on 'Stake ARCADE' CTA button",
+      "Hover scale transform (scale-102) and background glow expansion on game cards",
+      "Infinite horizontal ticker animation for editorial marquee",
+      "Interactive 3D hover tilt effect on game exhibition showcase cards"
+    ]
+  },
+  "image_urls": [
+    {
+      "category": "game_1_bundlecat",
+      "url": "https://images.unsplash.com/photo-1583634852966-130c15654305?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Arcade cabinet with red and neon light aesthetics for BundleCat All Stars"
+    },
+    {
+      "category": "game_2_cashcats",
+      "url": "https://images.unsplash.com/photo-1528870884180-5649b20f6435?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Glowing retro arcade machine for Cash Cats 'n' Money Mice"
+    },
+    {
+      "category": "game_3_feferdream",
+      "url": "https://images.unsplash.com/photo-1759273622466-bed6428ad957?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Neon dragon cyberpunk street aesthetic for Fefer Dream Apocalypse"
+    },
+    {
+      "category": "hero_arcade_bg",
+      "url": "https://images.unsplash.com/photo-1498736297812-3a08021f206f?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Dimly lit arcade environment for hero background ambient texture"
+    }
+  ],
+  "instructions_to_main_agent": [
+    "Follow all instructions in this design_guidelines.json file strictly.",
+    "Implement the landing page with React and Tailwind CSS in /app/frontend/src/App.js or modular components.",
+    "Ensure 'Stake ARCADE' CTA button is prominently animated and links out to 'https://staking.memearcade'.",
+    "Ensure 'TRADE' button is dimmed, disabled, and non-interactive.",
+    "Render all 3 game exhibition cards with their respective titles, taglines, blurbs, memecoin tickers ($BUN, $CASHCAT, $FEFER), badges ('community Robinhood', 'community Stable'), LIVE status indicator, and clickable link out to their respective subdomains.",
+    "Integrate social links: X (x.com/myMemeArcade) and Telegram (t.me/memearcade).",
+    "Include data-testid attributes on all buttons, cards, links, and key sections as specified.",
+    "Use dark, glowing cyberpunk/degen theme (#06070C background) with smooth framer-motion animations."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": {
+    "data_testid_rule": "MUST add data-testid attribute in kebab-case for all buttons, links, inputs, and interactive cards.",
+    "contrast_rule": "Ensure all text has APCA high-contrast visibility against dark backgrounds. Never rely on transparent dropdowns or unreadable dark grey on black.",
+    "no_center_app_rule": "Do not center align the root .App container in CSS.",
+    "hover_contrast_rule": "Always explicitly define text color on hover states."
+  }
+}
