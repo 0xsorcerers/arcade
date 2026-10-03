@@ -84,6 +84,13 @@ code { font-family: 'JetBrains Mono', monospace; }
     will-change: flex-grow;
 }
 
+/* Mobile: allow panels to expand vertically */
+@media (max-width: 767px) {
+    .gallery-panel {
+        flex-basis: auto !important;
+    }
+}
+
 /* ---------- Underline sweep ---------- */
 .sweep { position: relative; }
 .sweep::after {

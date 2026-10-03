@@ -7,8 +7,8 @@ const ease = [0.22, 1, 0.36, 1];
 
 const Panel = ({ game, active, dim, onEnter, onLeave, onOpen }) => (
   <div
-    className="gallery-panel group relative h-[58vh] cursor-pointer overflow-hidden border-l border-white/10 md:h-auto"
-    style={{ flexGrow: active ? 2.6 : 1, flexBasis: 0 }}
+    className="gallery-panel group relative h-[30vh] w-full cursor-pointer overflow-hidden border-l border-white/10 md:h-auto"
+    style={{ flexGrow: active ? 2.6 : 1, flexBasis: '0' }}
     onMouseEnter={onEnter}
     onMouseLeave={onLeave}
     onClick={() => onOpen(game)}

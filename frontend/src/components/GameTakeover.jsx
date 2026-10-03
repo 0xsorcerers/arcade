@@ -1,15 +1,61 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { X, Play, Download, Share2 } from "lucide-react";
+import { X, Play, Share2 } from "lucide-react";
+import { fetchTotalPlays } from "../utils/contract";
 
 const ease = [0.22, 1, 0.36, 1];
 
 export const GameTakeover = ({ game, onClose }) => {
-  const share = async () => {
+  const [totalPlays, setTotalPlays] = useState(null);
+  const [displayPlays, setDisplayPlays] = useState(0);
+
+  useEffect(() => {
+    const loadTotalPlays = async () => {
+      const plays = await fetchTotalPlays(game);
+      if (plays) {
+        setTotalPlays(plays);
+      }
+    };
+    loadTotalPlays();
+  }, [game]);
+
+  useEffect(() => {
+    if (totalPlays !== null) {
+      const target = Number(totalPlays);
+      const duration = 2000;
+      const startTime = performance.now();
+      const startValue = displayPlays;
+
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentValue = Math.floor(startValue + (target - startValue) * easeOutQuart);
+        
+        setDisplayPlays(currentValue);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }
+  }, [totalPlays]);
+
+  const share = async (platform = 'native') => {
+    const shareText = `Check out ${game.title} on Meme Arcade! ${game.href}`;
+    const shareUrl = game.href;
+
     try {
-      if (navigator.share) {
-        await navigator.share({ title: game.title, url: game.href });
-      } else {
-        await navigator.clipboard.writeText(game.href);
+      if (platform === 'twitter') {
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+      } else if (platform === 'native') {
+        if (navigator.share) {
+          await navigator.share({ title: game.title, url: game.href });
+        } else {
+          await navigator.clipboard.writeText(game.href);
+        }
       }
     } catch (e) {
       /* user dismissed */
@@ -98,25 +144,28 @@ export const GameTakeover = ({ game, onClose }) => {
               >
                 <Play className="h-4 w-4 fill-current" /> Enter Universe
               </a>
-              <a
+              {/* <a
                 href={game.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 border border-white/20 px-6 py-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-white transition-colors hover:border-white/50"
               >
                 <Download className="h-4 w-4" /> Download
-              </a>
+              </a> */}
               <button
-                onClick={share}
+                onClick={() => share('twitter')}
                 className="flex items-center gap-2 border border-white/20 px-6 py-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-white transition-colors hover:border-white/50"
+                data-testid="share-twitter-btn"
               >
-                <Share2 className="h-4 w-4" /> Share
+                <Share2 className="h-4 w-4" /> Share on X
               </button>
             </div>
 
             <div className="border border-white/15 bg-black/40 px-6 py-4 backdrop-blur-sm">
-              <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-stone-400">Active Now</div>
-              <div className="font-display text-3xl tracking-tight text-white">{game.activeNow}</div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-stone-400">Active Plays</div>
+              <div className="font-display text-3xl tracking-tight text-white">
+                {displayPlays.toLocaleString()}
+              </div>
             </div>
           </div>
         </motion.div>

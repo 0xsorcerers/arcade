@@ -5,7 +5,7 @@ import { SOCIALS } from "../data";
 const scrollTo = (id) => {
   const el = document.querySelector(id);
   if (el) el.scrollIntoView({ behavior: "smooth" });
-};
+}; 
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -24,15 +24,14 @@ const Line = ({ children, delay }) => (
 
 export const Hero = () => (
   <section id="top" className="relative min-h-screen w-full overflow-hidden">
-    {/* right cinematic image */}
-    <div className="absolute inset-y-0 right-0 w-full md:w-[62%]">
+    {/* full background image */}
+    <div className="absolute inset-0">
       <img
         src="/images/hero.webp"
         alt="Meme Arcade monolith"
         className="h-full w-full object-cover object-center"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#09090A] via-[#09090A]/70 to-transparent md:via-[#09090A]/40" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#09090A] via-transparent to-[#09090A]/60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#09090A] via-[#09090A]/60 to-[#09090A]/70" />
     </div>
 
     <div className="relative z-10 mx-auto flex min-h-screen max-w-[1500px] flex-col justify-center px-5 pb-24 pt-24 sm:px-10">
