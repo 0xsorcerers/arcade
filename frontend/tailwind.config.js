@@ -14,6 +14,12 @@ module.exports = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
       },
+      fontFamily: {
+        cinzel: ['Cinzel', 'Georgia', 'serif'],
+        sora: ['Sora', 'system-ui', 'sans-serif'],
+        jetbrains: ['JetBrains Mono', 'monospace'],
+        orbitron: ['Orbitron', 'sans-serif']
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -45,6 +51,7 @@ module.exports = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))'
         },
+        success: 'hsl(var(--success))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

@@ -1,0 +1,20 @@
+{
+  "name": "The Admiral",
+  "description": "This is a Penny4Thots Proof of Access tiered NFT",
+  "image": "https://penny4thots.fun/mint/Admiral.jpg",
+  "animation_url": "https://penny4thots.fun/mint/3-gold.mp4",
+  "dna": "c798b84240aa94c9ecd0f06cfefae7f82bf18d42",
+  "edition": "4",
+  "date": 1690249504,
+  "attributes": [
+    {
+      "trait_type": "TIER",
+      "value": "Admiral"
+    },
+    {
+      "trait_type": "TYPE",
+      "value": "GOLD"
+    }
+  ],
+  "compiler": "Penny4Thots"
+}

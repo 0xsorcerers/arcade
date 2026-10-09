@@ -1,0 +1,20 @@
+{
+  "name": "The Corsair",
+  "description": "This is a Penny4Thots Proof of Access tiered NFT",
+  "image": "https://penny4thots.fun/mint/Corsair.jpg",
+  "animation_url": "https://penny4thots.fun/mint/2-silver.mp4",
+  "dna": "d5d5dbd5f5715f00e96a395968b70fc6622cd622",
+  "edition": "3",
+  "date": 1690249504,
+  "attributes": [
+    {
+      "trait_type": "TIER",
+      "value": "Corsair"
+    },
+    {
+      "trait_type": "TYPE",
+      "value": "SILVER"
+    }
+  ],
+  "compiler": "Penny4Thots"
+}

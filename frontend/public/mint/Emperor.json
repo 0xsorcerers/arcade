@@ -1,0 +1,20 @@
+{
+  "name": "The Emperor",
+  "description": "This is a Penny4Thots Proof of Access tiered NFT",
+  "image": "https://penny4thots.fun/mint/Emperor.jpg",
+  "animation_url": "https://penny4thots.fun/mint/5-emerald.mp4",
+  "dna": "582dc4943828bd6ffb3538ae63bd8fbf0a80cc34",
+  "edition": "6",
+  "date": 1690249504,
+  "attributes": [
+    {
+      "trait_type": "TIER",
+      "value": "Emperor"
+    },
+    {
+      "trait_type": "TYPE",
+      "value": "EMERALD"
+    }
+  ],
+  "compiler": "Penny4Thots"
+}

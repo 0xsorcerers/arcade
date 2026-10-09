@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { SOCIALS } from "../data";
+import { Link } from "react-router-dom";
 
 const scrollTo = (id) => {
   const el = document.querySelector(id);
@@ -80,15 +80,13 @@ export const Hero = () => (
           Enter the Arcade
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </button>
-        <a
-          href={SOCIALS.stake}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/staking"
           data-testid="stake-arcade-hero-btn"
           className="flex items-center bg-[var(--gold)] px-8 py-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-[#09090A] transition-all hover:bg-[var(--gold-bright)] hover:shadow-[0_0_30px_rgba(244,178,35,0.5)]"
         >
           Stake Arcade
-        </a>
+        </Link>
         <button
           disabled
           data-testid="trade-soon-btn"

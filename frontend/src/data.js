@@ -1,7 +1,7 @@
 export const SOCIALS = {
   x: "https://x.com/myMemeArcade",
   telegram: "https://t.me/mymemearcade",
-  stake: "https://staking.memearcade.my", //
+  stake: "/staking",
 };
 
 export const GAMES = [
@@ -10,12 +10,12 @@ export const GAMES = [
     num: "01",
     title: "BundleCat All Stars",
     displayLines: ["ALL", "STARS"],
-    category: "Tournament Crypto Game",
-    mode: "SOLO / SQUAD",
-    tagline: "Cats vs legends. Winner takes the pot.",
+    category: "Tournament Themed Crypto Game",
+    mode: "SOLO PLAY / SQUAD PLAY",
+    tagline: "Cats vs NBA legends. Winner takes the pot.",
     description:
       "All Star Cats hold off the NBA All Stars in a high-stakes arena showdown. Out-play legends to cash out each season's pot in $BUN memecoin.",
-    chips: ["SEASON LADDER", "PLAY IN $BUN", "LOW RISK / HIGH REWARD", "LIVE PAYOUTS"],
+    chips: ["SEASON WINNERS", "PLAY IN $BUN", "LOW RISK / HIGH REWARD", "LIVE PAYOUTS"],
     ticker: "$BUN",
     community: "Robinhood",
     href: "https://allstars.memearcade.my",
@@ -42,12 +42,12 @@ export const GAMES = [
     num: "02",
     title: "Feferdream Apocalypse",
     displayLines: ["FEFERDREAM", "APOCALYPSE"],
-    category: "Survival Dreamscape",
-    mode: "SOLO / SQUAD",
-    tagline: "Dream hard. Survive harder.",
+    category: "Hunt Themed Crypto Game",
+    mode: "SOLO PLAY / SQUAD PLAY",
+    tagline: "Dream hard. win harder.",
     description:
       "Dino hunters take on Dragons to stop the apocalypse. Reality is melting and only the sharpest survive the dream — run the wasteland, stack rewards, and cash out in $fefer before the sky falls.",
-    chips: ["SURVIVAL RUNS", "PLAY IN $FEFER", "LOW RISK / HIGH REWARD", "LIVE PAYOUTS"],
+    chips: ["HUNTING ROUNDS", "PLAY IN $FEFER", "LOW RISK / HIGH REWARD", "LIVE PAYOUTS"],
     ticker: "$FEFER",
     community: "Stable",
     href: "https://feferdream.memearcade.my",
@@ -74,12 +74,12 @@ export const GAMES = [
     num: "03",
     title: "Cash Cats 'n' Money Mice",
     displayLines: ["CASH CATS", " 'N' MONEY MICE"],
-    category: "Heist Crypto Game",
+    category: "Bounty themed Crypto Game",
     mode: "SOLO / SQUAD",
     tagline: "Street cats. Suited mice. One pot.",
     description:
       "Street-cat crews versus suited mouse syndicates in a neon-soaked heist for the pot. Outsmart the mafia, grab the loot, and get that cash, Cat.",
-    chips: ["HEIST RUNS", "PLAY IN $CASHCAT", "LOW RISK / HIGH REWARD", "LIVE PAYOUTS"],
+    chips: ["BOUNTY RUNS", "PLAY IN $CASHCAT", "LOW RISK / HIGH REWARD", "LIVE PAYOUTS"],
     ticker: "$CASHCAT",
     community: "Robinhood",
     href: "https://cashcats.memearcade.my",

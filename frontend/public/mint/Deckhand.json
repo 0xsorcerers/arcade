@@ -1,0 +1,20 @@
+{
+  "name": "The Deckhand",
+  "description": "This is a Penny4Thots Proof of Access tiered NFT",
+  "image": "https://penny4thots.fun/mint/Deckhand.jpg",
+  "animation_url": "https://penny4thots.fun/mint/0-marble.mp4",
+  "dna": "75cd172d9e7554c24ae3dd07245585535a8ceb6d",
+  "edition": "1",
+  "date": 1690249504,
+  "attributes": [
+    {
+      "trait_type": "TIER",
+      "value": "Deckhand"
+    },
+    {
+      "trait_type": "TYPE",
+      "value": "MARBLE"
+    }
+  ],
+  "compiler": "Penny4Thots"
+}

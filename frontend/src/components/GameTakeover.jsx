@@ -44,7 +44,7 @@ export const GameTakeover = ({ game, onClose }) => {
   }, [totalPlays]);
 
   const share = async (platform = 'native') => {
-    const shareText = `Check out ${game.title} on Meme Arcade! ${game.href}`;
+    const shareText = `Check out ${game.title} on Meme Arcade!`;
     const shareUrl = game.href;
 
     try {

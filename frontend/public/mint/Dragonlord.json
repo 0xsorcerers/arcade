@@ -1,0 +1,20 @@
+{
+  "name": "The Dragonlord",
+  "description": "This is a Penny4Thots Proof of Access tiered NFT",
+  "image": "https://penny4thots.fun/mint/Dragonlord.jpg",
+  "animation_url": "https://penny4thots.fun/mint/4-platinum.mp4",
+  "dna": "6051bc97acfa01773b5a3e968f6a8ec82ed76b80",
+  "edition": "5",
+  "date": 1690249504,
+  "attributes": [
+    {
+      "trait_type": "TIER",
+      "value": "Dragonlord"
+    },
+    {
+      "trait_type": "TYPE",
+      "value": "PLATINUM"
+    }
+  ],
+  "compiler": "Penny4Thots"
+}

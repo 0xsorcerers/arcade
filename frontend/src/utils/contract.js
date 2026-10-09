@@ -1,6 +1,8 @@
 import { ethers, JsonRpcProvider } from "ethers";
 import Legend from "../abi/Legend.json";
 
+const totalPlaysAbi = Legend.abi;
+
 /**
  * Fetch TotalPlays from a game's Legend contract
  * @param {Object} game - Game object containing blockchain config
@@ -19,7 +21,7 @@ export const fetchTotalPlays = async (game) => {
     const provider = new JsonRpcProvider(rpc, chainId, { staticNetwork: true });
     
     // Create contract instance
-    const contract = new ethers.Contract(legend_contract_address, Legend.abi, provider);
+    const contract = new ethers.Contract(legend_contract_address, totalPlaysAbi, provider);
     
     // Fetch TotalPlays
     const totalPlays = await contract.TotalPlays();
