@@ -3432,7 +3432,7 @@ export default function Staking() {
           setClaimDialogOpen(open);
         }}
       >
-        <DialogContent className="max-h-[92dvh] max-w-md gap-3 overflow-y-auto border-border/60 theme-surface-elevated p-4 font-sora sm:max-w-lg sm:p-5">
+        <DialogContent className="max-h-[90dvh] max-w-md gap-2 overflow-y-auto border-border/60 theme-surface-elevated p-3 font-sora sm:max-w-lg sm:p-4">
           <DialogHeader>
             <DialogTitle className="font-cinzel text-lg">Claim rewards</DialogTitle>
             <DialogDescription className="font-sora text-xs text-muted-foreground">
@@ -3453,7 +3453,7 @@ export default function Staking() {
                   <li key={stream.address}>
                     <label
                       className={cn(
-                        "flex cursor-pointer items-start gap-2.5 rounded-xl border px-2.5 py-2 transition",
+                        "flex cursor-pointer items-start gap-2 rounded-xl border px-2.5 py-1.5 transition",
                         checked
                           ? "border-primary/50 bg-primary/10"
                           : "border-border/50 theme-surface hover:border-border",
@@ -3476,7 +3476,7 @@ export default function Staking() {
                             {stream.symbol}
                           </span>
                         </div>
-                        <p className="mt-0.5 font-jetbrains text-sm font-semibold text-success">
+                        <p className="mt-0.5 font-jetbrains text-xs font-semibold text-success">
                           {stream.claimableDisplay}{" "}
                           <span className="font-sora text-xs font-medium text-muted-foreground">
                             {stream.symbol}
@@ -3586,7 +3586,7 @@ export default function Staking() {
 
       {/* Harvested claim history — userTotalClaimHistory + paginated getUserClaims */}
       <Dialog open={claimHistoryOpen} onOpenChange={setClaimHistoryOpen}>
-        <DialogContent className="max-h-[92dvh] max-w-md gap-3 overflow-y-auto border-border/60 theme-surface-elevated p-4 font-sora sm:max-w-lg sm:p-5">
+        <DialogContent className="max-h-[90dvh] max-w-md gap-2 overflow-y-auto border-border/60 theme-surface-elevated p-3 font-sora sm:max-w-lg sm:p-4">
           <DialogHeader>
             <DialogTitle className="font-cinzel text-lg">Claim history</DialogTitle>
             <DialogDescription className="font-sora text-xs text-muted-foreground">
@@ -3632,12 +3632,12 @@ export default function Staking() {
                 </p>
               </div>
             ) : (
-              <ScrollArea className="max-h-[min(48vh,360px)]">
+              <ScrollArea className="max-h-[min(42vh,300px)]">
                 <ul className="divide-y divide-border/50">
                   {claimHistoryRows.map((row, index) => (
                     <li
                       key={`${row.timestamp}-${row.token}-${row.amount}-${index}`}
-                      className="flex items-start justify-between gap-3 px-3 py-2.5"
+                      className="flex items-start justify-between gap-3 px-3 py-1.5"
                     >
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-sora text-sm font-semibold text-foreground">
@@ -3724,7 +3724,7 @@ export default function Staking() {
           if (!open) setSelectedNft(null);
         }}
       >
-        <DialogContent className="max-h-[92dvh] max-w-md gap-3 overflow-y-auto border-border/60 theme-surface-elevated p-4 font-sora sm:max-w-lg sm:p-5">
+        <DialogContent className="max-h-[90dvh] max-w-md gap-2 overflow-y-auto border-border/60 theme-surface-elevated p-3 font-sora sm:max-w-lg sm:p-4">
           {selectedNft && (() => {
             const nftTier = getTierByContractName(selectedNft.TIER);
             const tokenId = selectedNft.ID.toString();
@@ -3740,7 +3740,7 @@ export default function Staking() {
                   </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div
                     className="relative overflow-hidden rounded-xl border-2 border-border/60 shadow-lg"
                     style={{ boxShadow: `0 0 32px ${nftTier.glow}` }}
@@ -3748,7 +3748,7 @@ export default function Staking() {
                     <img
                       src={nftTier.art.nft}
                       alt={`${nftTier.title} NFT #${tokenId}`}
-                      className="aspect-[4/3] w-full object-cover object-top"
+                      className="aspect-[16/10] w-full object-cover object-top"
                       draggable={false}
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent px-3 pb-2.5 pt-10">
@@ -3766,7 +3766,7 @@ export default function Staking() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-1.5 rounded-xl border border-border/50 bg-background/60 p-2.5 font-jetbrains text-xs">
+                  <div className="grid grid-cols-2 gap-1.5 rounded-xl border border-border/50 bg-background/60 p-2 font-jetbrains text-xs">
                     <div>
                       <p className="font-sora text-[10px] uppercase tracking-wide text-muted-foreground">
                         Contract tier
@@ -3880,13 +3880,13 @@ export default function Staking() {
           }
         }}
       >
-        <AlertDialogContent className="max-h-[92dvh] max-w-md gap-3 overflow-y-auto border-border/60 theme-surface-elevated p-4 font-sora sm:p-5">
+        <AlertDialogContent className="max-h-[90dvh] max-w-md gap-2 overflow-y-auto border-border/60 theme-surface-elevated p-3 font-sora sm:p-4">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-cinzel text-lg">
               Gift this NFT
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
-              <div className="space-y-2 text-left text-xs text-muted-foreground">
+              <div className="space-y-1.5 text-left text-xs text-muted-foreground">
                 {selectedNft ? (
                   <>
                     <p>
@@ -3902,7 +3902,7 @@ export default function Staking() {
                       <span className="font-jetbrains text-xs">transferFrom</span>.
                       This cannot be undone from the app.
                     </p>
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       <label
                         htmlFor="gift-recipient"
                         className="font-sora text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
@@ -3917,7 +3917,7 @@ export default function Staking() {
                         disabled={isGifting || giftStep === "sending"}
                         spellCheck={false}
                         autoComplete="off"
-                        className="font-jetbrains text-sm"
+                        className="h-9 font-jetbrains text-xs"
                       />
                       {giftRecipient.trim().length > 0 &&
                         !isValidAddress(giftRecipient) && (
@@ -3998,13 +3998,13 @@ export default function Staking() {
           }
         }}
       >
-        <AlertDialogContent className="max-h-[92dvh] max-w-md gap-3 overflow-y-auto border-border/60 theme-surface-elevated p-4 font-sora sm:p-5">
+        <AlertDialogContent className="max-h-[90dvh] max-w-md gap-2 overflow-y-auto border-border/60 theme-surface-elevated p-3 font-sora sm:p-4">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-cinzel text-lg">
               Mint {tier.title}
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
-              <div className="space-y-2 text-left text-xs text-muted-foreground">
+              <div className="space-y-1.5 text-left text-xs text-muted-foreground">
                 <p>
                   This mints a{" "}
                   <span className="font-semibold text-foreground">
@@ -4185,12 +4185,12 @@ export default function Staking() {
           }
         }}
       >
-        <DialogContent className="flex max-h-[94dvh] max-w-lg flex-col gap-0 overflow-hidden border-border/60 p-0 theme-surface-elevated font-sora sm:max-w-xl">
+        <DialogContent className="flex max-h-[96dvh] max-w-lg flex-col gap-0 overflow-hidden border-border/60 p-0 theme-surface-elevated font-sora sm:max-w-xl">
           <DialogHeader className="shrink-0 space-y-1 border-b border-border/50 px-3 pb-2 pt-3 sm:px-4">
-            <DialogTitle className="font-cinzel text-lg">
+            <DialogTitle className="font-cinzel text-base">
               {subDialogMode === "farm" ? "Farm ARCADE · Streams" : "Reward streams"}
             </DialogTitle>
-            <DialogDescription className="font-sora text-xs text-muted-foreground">
+              <DialogDescription className="font-sora text-[11px] leading-snug text-muted-foreground">
               Choose up to{" "}
               <span className="font-jetbrains font-semibold text-foreground">{maxStreams}</span>{" "}
               revenue stream{maxStreams === 1 ? "" : "s"}
@@ -4202,17 +4202,17 @@ export default function Staking() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="min-h-0 flex-1 space-y-2 overflow-y-auto px-3 py-2 sm:px-4">
+          <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto px-3 py-2 sm:px-4">
             {/* Search + custom address */}
-            <div className="space-y-2">
-              <div className="space-y-1.5">
+            <div className="space-y-1">
+              <div className="space-y-1">
                 <div className="relative">
                   <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     value={streamSearch}
                     onChange={(e) => setStreamSearch(e.target.value)}
                     placeholder="Search name or paste 0x address…"
-                    className="h-9 rounded-xl border-border/50 pl-9 font-sora text-xs"
+                    className="h-8 rounded-xl border-border/50 pl-9 font-sora text-[11px]"
                   />
                   {(searchAddressStatus === "waiting" ||
                     searchAddressStatus === "loading") && (
@@ -4221,18 +4221,18 @@ export default function Staking() {
                 </div>
                 {/* Debounced address → ERC-20 name result (click to add) */}
                 {searchAddressStatus === "waiting" && (
-                  <p className="px-1 font-sora text-[11px] text-muted-foreground">
+                  <p className="px-1 font-sora text-[10px] text-muted-foreground">
                     Address detected — checking token in a moment…
                   </p>
                 )}
                 {searchAddressStatus === "loading" && (
-                  <p className="flex items-center gap-1.5 px-1 font-sora text-[11px] text-muted-foreground">
+                  <p className="flex items-center gap-1.5 px-1 font-sora text-[10px] text-muted-foreground">
                     <Loader2 className="h-3 w-3 animate-spin" />
                     Reading name, symbol & decimals…
                   </p>
                 )}
                 {searchAddressStatus === "invalid" && (
-                  <p className="px-1 font-sora text-[11px] text-destructive">
+                  <p className="px-1 font-sora text-[10px] text-destructive">
                     Not a valid ERC-20 — needs name(), symbol(), and decimals().
                   </p>
                 )}
@@ -4266,7 +4266,7 @@ export default function Staking() {
                       }
                     }}
                     className={cn(
-                      "flex w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition",
+                      "flex w-full items-center gap-2 rounded-xl border px-2.5 py-2 text-left transition",
                       isStreamSelected(searchAddressHit.address)
                         ? "border-primary/50 bg-primary/10"
                         : !canAddMoreStreams
@@ -4283,10 +4283,10 @@ export default function Staking() {
                       )}
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-sora text-sm font-semibold text-foreground">
+                      <p className="truncate font-sora text-xs font-semibold text-foreground">
                         {searchAddressHit.name}
                         {searchAddressHit.symbol ? (
-                          <span className="ml-1.5 font-jetbrains text-[11px] font-normal text-muted-foreground">
+                          <span className="ml-1.5 font-jetbrains text-[10px] font-normal text-muted-foreground">
                             {searchAddressHit.symbol}
                           </span>
                         ) : null}
@@ -4312,7 +4312,7 @@ export default function Staking() {
                       ? "Custom token contract address"
                       : `List full (${maxStreams}/${maxStreams}) — remove a stream first`
                   }
-                  className="h-9 flex-1 rounded-xl border-border/50 font-jetbrains text-xs"
+                  className="h-8 flex-1 rounded-xl border-border/50 font-jetbrains text-[11px]"
                   disabled={validatingCustomToken}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -4325,7 +4325,7 @@ export default function Staking() {
                   type="button"
                   size="sm"
                   variant="secondary"
-                  className="h-9 shrink-0 rounded-xl"
+                  className="h-8 shrink-0 rounded-xl text-xs"
                   onClick={() => void addCustomToken()}
                   disabled={
                     validatingCustomToken ||
@@ -4346,7 +4346,7 @@ export default function Staking() {
                 </Button>
               </div>
               {!canAddMoreStreams && (
-                <p className="px-0.5 font-sora text-[11px] text-amber-700 dark:text-amber-400">
+                <p className="px-0.5 font-sora text-[10px] text-amber-700 dark:text-amber-400">
                   Stream limit reached ({selectedStreams.length}/{maxStreams}). Remove a
                   stream before adding another.
                 </p>
@@ -4354,15 +4354,15 @@ export default function Staking() {
             </div>
 
             {/* Selection chips */}
-              <div className="rounded-xl border border-border/50 bg-background/50 p-2">
+              <div className="max-h-[min(18vh,130px)] overflow-y-auto rounded-xl border border-border/50 bg-background/50 p-2">
               <div className="mb-1.5 flex items-center justify-between">
-                <p className="font-orbitron text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                <p className="font-orbitron text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
                   Your list · {selectedStreams.length}/{maxStreams}
                 </p>
                 {selectedStreams.length > 0 && (
                   <button
                     type="button"
-                    className="font-sora text-[10px] font-semibold text-muted-foreground hover:text-destructive"
+                    className="font-sora text-[9px] font-semibold text-muted-foreground hover:text-destructive"
                     onClick={() => setSelectedStreams([])}
                   >
                     Clear
@@ -4370,7 +4370,7 @@ export default function Staking() {
                 )}
               </div>
               {selectedStreams.length === 0 ? (
-                <p className="font-sora text-xs text-muted-foreground">
+                <p className="font-sora text-[11px] text-muted-foreground">
                   No streams selected yet
                 </p>
               ) : (
@@ -4380,7 +4380,7 @@ export default function Staking() {
                       key={addr}
                       type="button"
                       onClick={() => toggleStream(addr)}
-                      className="inline-flex max-w-full items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 font-sora text-[11px] font-semibold text-foreground transition hover:bg-destructive/15"
+                      className="inline-flex max-w-full items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-sora text-[10px] font-semibold text-foreground transition hover:bg-destructive/15"
                       title={addr}
                     >
                       <span className="truncate">{streamLabel(addr)}</span>
@@ -4390,7 +4390,7 @@ export default function Staking() {
                 </div>
               )}
               {liveSubscriptions.length > 0 && (
-                <p className="mt-2 font-sora text-[10px] text-muted-foreground">
+                <p className="mt-1 font-sora text-[9px] text-muted-foreground">
                   On-chain now:{" "}
                   {liveSubscriptions.map((a) => streamLabel(a)).join(", ")}
                 </p>
@@ -4399,7 +4399,7 @@ export default function Staking() {
 
             {/* Farm readiness summary */}
             {subDialogMode === "farm" && (
-              <div className="space-y-2 rounded-xl border border-primary/30 bg-primary/5 p-3 text-xs leading-relaxed">
+              <div className="space-y-1 rounded-xl border border-primary/30 bg-primary/5 p-2 text-[11px] leading-snug">
                 {loadingFarmReadiness && (
                   <p className="flex items-center gap-2 text-foreground">
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -4408,7 +4408,7 @@ export default function Staking() {
                 )}
                 {farmReadiness && (
                   <>
-                    <div className="space-y-1 font-jetbrains text-[11px]">
+                    <div className="space-y-0.5 font-jetbrains text-[10px]">
                       <div className="flex justify-between gap-2">
                         <span className="text-muted-foreground">Deposit</span>
                         <span className="font-semibold text-foreground">
@@ -4531,14 +4531,14 @@ export default function Staking() {
             )}
 
             {/* Categorized whitelist */}
-            <ScrollArea className="h-[min(28vh,210px)] rounded-xl border border-border/50">
-              <div className="space-y-2.5 p-2">
+            <ScrollArea className="h-[min(36vh,280px)] rounded-xl border border-border/50">
+              <div className="space-y-2 p-2">
                 {CATEGORY_ORDER.map((cat) => {
                   const list = filteredCategories[cat];
                   if (!list?.length) return null;
                   return (
                     <div key={cat}>
-                      <p className="mb-1.5 px-1 font-orbitron text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                      <p className="mb-1 px-1 font-orbitron text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                         {CATEGORY_LABELS[cat]}
                       </p>
                       <ul className="space-y-1">
@@ -4553,7 +4553,7 @@ export default function Staking() {
                             <li key={token.address}>
                               <label
                                 className={cn(
-                                  "flex cursor-pointer items-center gap-2.5 rounded-lg border px-2.5 py-2 transition",
+                                  "flex cursor-pointer items-center gap-2 rounded-lg border px-2 py-1 transition",
                                   checked
                                     ? "border-primary/50 bg-primary/10"
                                     : "border-border/40 bg-background/40 hover:bg-muted/40",
@@ -4565,7 +4565,7 @@ export default function Staking() {
                                   onCheckedChange={() => toggleStream(token.address)}
                                 />
                                 <div className="min-w-0 flex-1">
-                                  <p className="truncate font-sora text-sm font-semibold text-foreground">
+                                  <p className="truncate font-sora text-xs font-semibold text-foreground">
                                     {token.name}
                                     {wasFormer && (
                                       <span className="ml-1.5 font-jetbrains text-[10px] font-normal text-primary">

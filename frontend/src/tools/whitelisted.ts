@@ -20,9 +20,9 @@ export function getWhitelistedRewardTokens(_chainId: number): WhitelistedRewardT
   const tokens: WhitelistedRewardToken[] = [
     { address: ZERO_ADDRESS as Address, name: "ETH", type: "crypto" },
   ];
-  if (arcadeAddress.toLowerCase() !== ZERO_ADDRESS.toLowerCase()) {
-    tokens.push({ address: arcadeAddress, name: "ARCADE", type: "crypto" });
-  }
+  // if (arcadeAddress.toLowerCase() !== ZERO_ADDRESS.toLowerCase()) {
+  //   tokens.push({ address: arcadeAddress, name: "ARCADE", type: "crypto" });
+  // }
 
   tokens.push({ address: "0xF4cA5adcc58Ee0aCb3E442a6c5058f381B2F8E96", name: "SoulOfSparta", type: "crypto" });
   tokens.push({ address: "0x4c84B8B50a66bbc512C0154C4a16BA909789A8A3", name: "SpaceX", type: "stock" });

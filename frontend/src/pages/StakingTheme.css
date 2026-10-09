@@ -64,7 +64,7 @@ html:has(.staking-app)::-webkit-scrollbar-thumb:hover,
 body:has(.staking-app) *::-webkit-scrollbar-thumb:hover { background: #8a7959; }
 
 .staking-app .font-sora { font-family: 'Archivo', sans-serif; }
-.staking-app .font-cinzel { font-family: 'Anton', sans-serif; }
+.staking-app .font-cinzel { font-family: 'Cinzel', Georgia, serif; }
 .staking-app .font-orbitron,
 .staking-app .font-jetbrains { font-family: 'JetBrains Mono', monospace; }
 
