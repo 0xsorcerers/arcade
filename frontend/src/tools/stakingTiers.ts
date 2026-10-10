@@ -28,7 +28,7 @@ export interface StakingTier {
 
 const tierArt = (id: number, slug: string) => ({
   nft: `/staking/tiers/${id}-${slug}/nft.jpg`,
-  nftVideo: `/mint/${id}-${slug}.mp4`,
+  nftVideo: `/staking/tiers/${id}-${slug}/loop.mp4`,
   farm: `/staking/tiers/${id}-${slug}/farm.jpg`,
   withdraw: `/staking/tiers/${id}-${slug}/withdraw.jpg`,
   harvest: `/staking/tiers/${id}-${slug}/harvest.jpg`,
@@ -38,69 +38,69 @@ const tierArt = (id: number, slug: string) => ({
 export const STAKING_TIERS: StakingTier[] = [
   {
     id: 0,
-    contractName: "Marble",
-    title: "Deckhand",
-    tagline: "Humble marble servant of the fleet",
+    contractName: "Pong",
+    title: "Pong",
+    tagline: "The first cabinet. Two paddles. Infinite rematches.",
     lists: 2,
     multiplier: 1,
     accent: "from-slate-300 to-stone-500",
     glow: "rgba(203,213,225,0.45)",
-    art: tierArt(0, "marble"),
+    art: tierArt(0, "pong"),
   },
   {
     id: 1,
-    contractName: "Bronze",
-    title: "Pirate",
-    tagline: "Storm-born bronze freebooter",
+    contractName: "Space Invaders",
+    title: "Space Invaders",
+    tagline: "Hold the line. The sky is dropping.",
     lists: 4,
     multiplier: 2,
-    accent: "from-amber-600 to-orange-800",
-    glow: "rgba(217,119,6,0.5)",
-    art: tierArt(1, "bronze"),
+    accent: "from-green-400 to-green-600",
+    glow: "rgba(127,255,0,0.45)",
+    art: tierArt(1, "invaders"),
   },
   {
     id: 2,
-    contractName: "Silver",
-    title: "Corsair",
-    tagline: "Moonlit silver captain of the deep",
+    contractName: "Pac-Man",
+    title: "Pac-Man",
+    tagline: "Chase the dots. Outrun the ghosts.",
     lists: 8,
     multiplier: 4,
-    accent: "from-slate-200 to-sky-500",
-    glow: "rgba(148,163,184,0.55)",
-    art: tierArt(2, "silver"),
+    accent: "from-yellow-300 to-amber-500",
+    glow: "rgba(255,208,40,0.5)",
+    art: tierArt(2, "pacman"),
   },
   {
     id: 3,
-    contractName: "Gold",
-    title: "Admiral",
-    tagline: "Gilded privateer of the golden armada",
+    contractName: "Tetris",
+    title: "Tetris",
+    tagline: "Stack the lines. Sovereign of the high score.",
     lists: 12,
     multiplier: 8,
-    accent: "from-yellow-300 to-amber-600",
-    glow: "rgba(251,191,36,0.55)",
-    art: tierArt(3, "gold"),
+    accent: "from-pink-400 to-purple-600",
+    glow: "rgba(255,43,214,0.5)",
+    art: tierArt(3, "tetris"),
   },
   {
     id: 4,
-    contractName: "Platinum",
-    title: "Dragonlord",
-    tagline: "Ice-scale rider of the platinum wyrm",
+    contractName: "Street Fighter",
+    title: "Street Fighter",
+    tagline: "Best of best. Hadouken in the hall.",
     lists: 15,
     multiplier: 16,
-    accent: "from-cyan-200 to-indigo-500",
-    glow: "rgba(103,232,249,0.5)",
-    art: tierArt(4, "platinum"),
+    accent: "from-red-400 to-red-600",
+    glow: "rgba(255,80,80,0.5)",
+    art: tierArt(4, "fighter"),
   },
   {
     id: 5,
-    contractName: "Emerald",
-    title: "Emperor",
-    tagline: "Sovereign of emerald dragons",
+    contractName: "Mortal Kombat",
+    title: "Mortal Kombat",
+    tagline: "Finish him. Finish the pot.",
     lists: 20,
     multiplier: 32,
-    accent: "from-emerald-300 to-green-700",
-    glow: "rgba(52,211,153,0.55)",
-    art: tierArt(5, "emerald"),
+    accent: "from-cyan-300 to-blue-600",
+    glow: "rgba(46,231,255,0.5)",
+    art: tierArt(5, "kombat"),
   },
 ];
 
@@ -108,27 +108,29 @@ export function getTier(id: number): StakingTier {
   return STAKING_TIERS[Math.max(0, Math.min(5, id))] ?? STAKING_TIERS[0];
 }
 
-/**
- * Map on-chain Player.TIER to UI tier config.
- * Live contract TierByName uses fantasy titles (Deckhand, Pirate, …);
- * also accept material names (Marble, Bronze, …) for flexibility.
- */
-export function getTierByContractName(name: string): StakingTier {
-  const key = (name || "").trim().toLowerCase();
-  if (!key) return STAKING_TIERS[0];
-  const found = STAKING_TIERS.find(
-    (t) =>
-      t.title.toLowerCase() === key ||
-      t.contractName.toLowerCase() === key,
-  );
-  return found ?? STAKING_TIERS[0];
+/** 1-based number shown in the UI. On-chain mint() still uses id 0..5. */
+export function displayTierNumber(id: number): number {
+  return getTier(id).id + 1;
 }
 
-/** Format ARCADE burn display (contract uses 18-decimal requiredAmount by default) */
-export function formatArcadeBurn(requiredAmount: bigint, multiplier: number, decimals = 18): string {
-  const burn = requiredAmount * BigInt(multiplier);
-  const whole = burn / 10n ** BigInt(decimals);
-  return whole.toLocaleString();
+export function compactTierKey(value: string) {
+  return value.trim().toLowerCase().replace(/[\s_-]+/g, '');
+}
+
+/**
+ * Map on-chain Player.TIER to UI tier config.
+ * Live contract TierByName uses arcade game titles (Pong, Space Invaders, …);
+ * also accept compacted names for flexibility.
+ */
+export function getTierByContractName(name: string, liveNames?: readonly string[]): StakingTier {
+  const key = compactTierKey(name || '');
+  if (!key) return STAKING_TIERS[0];
+  const found = STAKING_TIERS.find((tier) => {
+    if (compactTierKey(tier.title) === key || compactTierKey(tier.contractName) === key) return true;
+    const live = liveNames?.[tier.id];
+    return Boolean(live && compactTierKey(live) === key);
+  });
+  return found ?? STAKING_TIERS[0];
 }
 
 /**

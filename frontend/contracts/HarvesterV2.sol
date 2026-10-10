@@ -286,7 +286,8 @@ contract Harvester is Ownable, ReentrancyGuard {
             claimData.rewardsOwed += rewardsAccrued;
             claimData.eraAtBlock = endPeriod;
             
-            uint256 rewardsDue = claimData.rewardsOwed / divisor;
+            // FIX: Increment liability ONLY by the newly accrued chunk, not the cumulative total
+            uint256 rewardsDue = rewardsAccrued / divisor;
             tEco.allRewardsOwed += rewardsDue;
         }
     }

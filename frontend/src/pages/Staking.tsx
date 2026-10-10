@@ -3027,7 +3027,7 @@ export default function Staking() {
             <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 md:grid-cols-3 md:gap-2.5 lg:min-h-0 lg:overflow-hidden">
               <ActionColumn
                 title="Farm"
-                subtitle="Stake ARCADE · Serving"
+                subtitle="Stake ARCADE · Start"
                 background={tier.art.farm}
                 delay={0.15}
               >
@@ -3168,7 +3168,7 @@ export default function Staking() {
 
               <ActionColumn
                 title="Withdraw"
-                subtitle="Unstake · Panicked"
+                subtitle="Unstake · Game Over"
                 background={tier.art.withdraw}
                 delay={0.25}
               >
@@ -3259,7 +3259,7 @@ export default function Staking() {
 
               <ActionColumn
                 title="Harvest"
-                subtitle="Claim · Epic glory"
+                subtitle="Claim · 1UP+"
                 background={tier.art.harvest}
                 delay={0.35}
               >
