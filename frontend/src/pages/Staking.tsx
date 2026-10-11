@@ -143,6 +143,7 @@ const CATEGORY_LABELS: Record<RewardTokenCategory, string> = {
   stock: "Stocks",
   etf: "ETFs",
   commodity: "Commodities",
+  meme: "Memes",
   other: "Other",
 };
 
@@ -152,6 +153,7 @@ const CATEGORY_ORDER: RewardTokenCategory[] = [
   "stock",
   "etf",
   "commodity",
+  "meme",
   "other",
 ];
 
@@ -313,13 +315,17 @@ function formatClaimWhen(timestamp: number): string {
 function TierCarousel({
   tierId,
   onChange,
+  disabled = false,
 }: {
   tierId: TierId;
   onChange: (id: TierId) => void;
+  disabled?: boolean;
 }) {
   const tier = getTier(tierId);
-  const prev = () => onChange(((tierId + STAKING_TIERS.length - 1) % STAKING_TIERS.length) as TierId);
-  const next = () => onChange(((tierId + 1) % STAKING_TIERS.length) as TierId);
+  const changeTier = (id: TierId) => {
+    if (disabled) return;
+    onChange(id);
+  };
 
   const playLoopVideo = useCallback((el: HTMLVideoElement | null) => {
     if (!el) return;
@@ -384,20 +390,22 @@ function TierCarousel({
         <motion.button
           type="button"
           aria-label="Previous tier"
-          onClick={prev}
+          disabled={disabled}
+          onClick={() => changeTier(((tierId + STAKING_TIERS.length - 1) % STAKING_TIERS.length) as TierId)}
           animate={{ x: [0, -4, 0] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute left-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/55 text-white shadow-lg backdrop-blur-sm transition hover:bg-primary hover:text-primary-foreground"
+          className="absolute left-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/55 text-white shadow-lg backdrop-blur-sm transition hover:bg-primary hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-45"
         >
           <ChevronLeft className="h-5 w-5" />
         </motion.button>
         <motion.button
           type="button"
           aria-label="Next tier"
-          onClick={next}
+          disabled={disabled}
+          onClick={() => changeTier(((tierId + 1) % STAKING_TIERS.length) as TierId)}
           animate={{ x: [0, 4, 0] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-          className="absolute right-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/55 text-white shadow-lg backdrop-blur-sm transition hover:bg-primary hover:text-primary-foreground"
+          className="absolute right-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/55 text-white shadow-lg backdrop-blur-sm transition hover:bg-primary hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-45"
         >
           <ChevronRight className="h-5 w-5" />
         </motion.button>
@@ -409,9 +417,10 @@ function TierCarousel({
             key={t.id}
             type="button"
             aria-label={`Select ${t.title}`}
-            onClick={() => onChange(t.id)}
+            disabled={disabled}
+            onClick={() => changeTier(t.id)}
             className={cn(
-              "h-1.5 rounded-full transition-all",
+              "h-1.5 rounded-full transition-all disabled:cursor-not-allowed disabled:opacity-45",
               t.id === tierId ? "w-5 bg-primary" : "w-1.5 bg-muted-foreground/40 hover:bg-muted-foreground/70",
             )}
           />
@@ -1218,6 +1227,23 @@ export default function Staking() {
     isFarming,
     withdrawCountdown,
   ]);
+
+  const actionInProgress =
+    isMinting ||
+    isGifting ||
+    isFarming ||
+    isSyncing ||
+    mintStep !== "idle" ||
+    loadingReadiness ||
+    farmStep !== "idle" ||
+    loadingFarmReadiness ||
+    withdrawStep !== "idle" ||
+    claimStep !== "idle" ||
+    giftStep !== "idle" ||
+    legacyClaimStep !== "idle" ||
+    syncActionStep !== "idle" ||
+    syncTransactionsRemaining > 0 ||
+    validatingCustomToken;
 
   /** Live plan: skip approve when pre-approved; include subscribe when streams changed */
   const farmPlan = useMemo(() => {
@@ -2579,13 +2605,13 @@ export default function Staking() {
               <p className="mb-1 text-center font-orbitron text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
                 Pick your tier
               </p>
-              <TierCarousel tierId={tierId} onChange={handleTierChange} />
+              <TierCarousel tierId={tierId} onChange={handleTierChange} disabled={actionInProgress} />
             </div>
 
             <div className="flex shrink-0 items-center justify-center border-b border-border/50 px-2.5 py-1.5">
               <button
                 type="button"
-                disabled={isMinting || loadingReadiness}
+                disabled={actionInProgress}
                 onClick={() => {
                   void openMintDialog();
                 }}
@@ -2616,6 +2642,7 @@ export default function Staking() {
                   <button
                     key={id}
                     type="button"
+                    disabled={actionInProgress}
                     onClick={() => setActiveSidebarTab(id)}
                     className={cn(
                       "flex flex-1 items-center justify-center gap-1 rounded-lg px-2 py-1 font-sora text-[11px] font-semibold transition",
@@ -2747,6 +2774,7 @@ export default function Staking() {
                       <Button
                         size="sm"
                         className="mt-0.5 w-full rounded-lg bg-primary font-sora text-xs text-primary-foreground hover:opacity-90"
+                        disabled={actionInProgress}
                         onClick={() => {
                           void openSubscriptionDialog("manage");
                         }}
@@ -2832,6 +2860,7 @@ export default function Staking() {
                               ? `${nftTier.title} #${tokenId} · designated`
                               : `${nftTier.title} #${tokenId}`
                           }
+                          disabled={actionInProgress}
                           onClick={() => openNftDialog(nft)}
                           className={cn(
                             "relative h-9 w-9 shrink-0 overflow-hidden rounded-lg border shadow-sm transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
@@ -2869,6 +2898,7 @@ export default function Staking() {
                   onClick={() => {
                     void openSubscriptionDialog("manage");
                   }}
+                  disabled={actionInProgress}
                   animate={
                     needsStreamSubscription
                       ? {
@@ -2891,6 +2921,7 @@ export default function Staking() {
                       : subDialogOpen
                         ? "border-primary bg-primary text-primary-foreground shadow-[0_0_16px_hsl(var(--primary)/0.55)]"
                         : "border-border/50 bg-emerald-600 text-white hover:opacity-90",
+                    actionInProgress && "cursor-not-allowed opacity-50",
                   )}
                 >
                   <Radio className="h-4 w-4" />
@@ -2906,6 +2937,7 @@ export default function Staking() {
                   type="button"
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border/50 bg-accent text-accent-foreground shadow-md transition hover:opacity-90"
                   title="Help / Support"
+                  disabled={actionInProgress}
                   onClick={() => setActiveSidebarTab("info")}
                 >
                   <HelpCircle className="h-4 w-4" />
@@ -2949,7 +2981,7 @@ export default function Staking() {
                 }
                 accentClass="text-amber-600 dark:text-amber-300"
                 delay={0.15}
-                onClick={account && harvesterLive ? openClaimHistory : undefined}
+                onClick={account && harvesterLive && !actionInProgress ? openClaimHistory : undefined}
                 title={
                   account && harvesterLive
                     ? "View claim history"
@@ -3121,7 +3153,7 @@ export default function Staking() {
                     placeholder="Enter ARCADE amount"
                     value={farmAmount}
                     onChange={(e) => setFarmAmount(e.target.value)}
-                    disabled={isFarming}
+                    disabled={actionInProgress}
                     className="h-10 rounded-xl border border-border/50 theme-input-surface text-center font-jetbrains font-medium text-foreground placeholder:font-sora placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary lg:h-9"
                   />
                   <div className="flex gap-1.5">
@@ -3129,7 +3161,7 @@ export default function Staking() {
                       <button
                         key={pct}
                         type="button"
-                        disabled={isFarming}
+                        disabled={actionInProgress}
                         onClick={() => setFarmAmountPercent(pct)}
                         className="flex-1 rounded-lg border border-primary/45 bg-black/55 py-1 font-orbitron text-[10px] font-bold uppercase tracking-wide text-primary backdrop-blur-sm transition hover:bg-primary hover:text-primary-foreground disabled:opacity-50"
                       >
@@ -3139,7 +3171,7 @@ export default function Staking() {
                   </div>
                   <Button
                     className="h-11 w-full rounded-xl bg-primary font-orbitron text-sm font-bold tracking-wide text-primary-foreground shadow-lg hover:opacity-90 sm:text-base lg:h-10"
-                    disabled={isFarming || loadingFarmReadiness}
+                    disabled={actionInProgress}
                     onClick={() => {
                       void openFarmFlow();
                     }}
@@ -3229,6 +3261,7 @@ export default function Staking() {
                     )}
                     disabled={
                       !canWithdrawNow ||
+                      actionInProgress ||
                       withdrawStep !== "idle" ||
                       syncActionStep !== "idle"
                     }
@@ -3283,9 +3316,10 @@ export default function Staking() {
                         variant="outline"
                         size="sm"
                         className="mt-2 h-8 rounded-lg border-amber-500/60 text-amber-700 dark:text-amber-200"
-                        disabled={isSyncing || syncTransactionsRemaining > 0}
+                        disabled={actionInProgress}
                         onClick={() => {
-                          void syncMissingEras();
+                          setSyncActionStep("syncing");
+                          void syncMissingEras().finally(() => setSyncActionStep("idle"));
                         }}
                       >
                         {syncTransactionsRemaining > 0
@@ -3302,7 +3336,7 @@ export default function Staking() {
                       <button
                         type="button"
                         onClick={() => setShowRewardPicker((v) => !v)}
-                        disabled={claimableStreams.length === 0}
+                        disabled={actionInProgress || claimableStreams.length === 0}
                         className="flex w-full items-center justify-between gap-2 text-left disabled:opacity-60"
                       >
                         <div>
@@ -3389,6 +3423,7 @@ export default function Staking() {
                     <Button
                       className="h-11 flex-1 rounded-xl bg-primary font-orbitron text-sm font-bold tracking-wide text-primary-foreground shadow-lg hover:opacity-90 sm:text-base lg:h-10"
                       disabled={
+                        actionInProgress ||
                         claimStep === "claiming" ||
                         isFarming ||
                         claimableStreams.length === 0
@@ -3411,6 +3446,7 @@ export default function Staking() {
                   <button
                     type="button"
                     disabled={
+                      actionInProgress ||
                       claimStep === "claiming" ||
                       isFarming ||
                       claimableStreams.length === 0
