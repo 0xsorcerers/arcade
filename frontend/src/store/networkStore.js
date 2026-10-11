@@ -1,6 +1,6 @@
-import { robinhoodNetwork } from "@/tools/networkData";
+import { blockchain } from "@/tools/networkData";
 
-const state = Object.freeze({ selectedNetwork: robinhoodNetwork });
+const state = Object.freeze({ selectedNetwork: blockchain });
 
 export const useNetworkStore = (selector) => selector(state);
-export const getCurrentNetwork = () => robinhoodNetwork;
+export const getCurrentNetwork = () => blockchain;

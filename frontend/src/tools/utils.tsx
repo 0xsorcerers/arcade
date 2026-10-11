@@ -1089,18 +1089,13 @@ export async function getPendingSyncInfo(
           maxBatchSize: Number(maxBatchSize),
           maxInlineEras: Number(maxInlineEras),
         }));
-    const [tEco, eralength, limits, claimTuple] = await Promise.all([
+    const [tEco, limits, claimTuple, pendingEras] = await Promise.all([
       client_.readContract({
         address: harvester,
         abi: harvesterABI,
         functionName: "tokenEconomics",
         args: [token],
       }) as Promise<readonly [bigint, bigint, bigint, bigint, bigint, boolean]>,
-      client_.readContract({
-        address: harvester,
-        abi: harvesterABI,
-        functionName: "eralength",
-      }) as Promise<bigint>,
       limitsPromise,
       client_.readContract({
         address: harvester,
@@ -1108,37 +1103,36 @@ export async function getPendingSyncInfo(
         functionName: "claimRewards",
         args: [wallet, token],
       }) as Promise<readonly [bigint, bigint, bigint]>,
+      client_.readContract({
+        address: harvester,
+        abi: harvesterABI,
+        functionName: "pendingEras",
+        args: [wallet, token],
+      }) as Promise<bigint>,
     ]);
 
     if (!tEco?.[5]) {
       return { token: getAddress(token), unsyncedEras: 0, loopsNeeded: 0, liveCurrentEra: 0, userEra: 0, maxBatchSize: limits.maxBatchSize };
     }
 
-    const startTime = Number(tEco?.[4] ?? 0n);
-    const nowSec = Math.floor(Date.now() / 1000);
-    if (nowSec < startTime) {
-      return { token: getAddress(token), unsyncedEras: 0, loopsNeeded: 0, liveCurrentEra: 0, userEra: 0, maxBatchSize: limits.maxBatchSize };
-    }
-
-    const eraLength = Number(eralength ?? 0n);
-    const liveCurrentEra = eraLength > 0 ? Math.floor((nowSec - startTime) / eraLength) : 0;
     const userEra = Number(claimTuple?.[0] ?? 0n);
     const stakedAmount = claimTuple?.[2] ?? 0n;
+    const unsyncedEras = Number(pendingEras ?? 0n);
 
     // A user with no active ARCADE balance in a token is effectively a fresh depositor or
     // a fully paid-out user; they should not be forced through stale-era sync before a new deposit.
     if (stakedAmount === 0n) {
-      return { token: getAddress(token), unsyncedEras: 0, loopsNeeded: 0, liveCurrentEra, userEra, maxBatchSize: limits.maxBatchSize };
+      return { token: getAddress(token), unsyncedEras: 0, loopsNeeded: 0, liveCurrentEra: userEra, userEra, maxBatchSize: limits.maxBatchSize };
     }
 
-    if (liveCurrentEra <= userEra) {
-      return { token: getAddress(token), unsyncedEras: 0, loopsNeeded: 0, liveCurrentEra, userEra, maxBatchSize: Number(maxBatchSize ?? 0n) };
+    if (unsyncedEras === 0) {
+      return { token: getAddress(token), unsyncedEras: 0, loopsNeeded: 0, liveCurrentEra: userEra, userEra, maxBatchSize: limits.maxBatchSize };
     }
 
     const batchSize = limits.maxBatchSize;
-    const unsyncedEras = liveCurrentEra - userEra;
     const erasBeyondInlineLimit = Math.max(0, unsyncedEras - limits.maxInlineEras);
     const loopsNeeded = batchSize > 0 ? Math.ceil(erasBeyondInlineLimit / batchSize) : 0;
+    const liveCurrentEra = userEra + unsyncedEras;
 
     return {
       token: getAddress(token),
@@ -2690,6 +2684,8 @@ export interface ClaimableRewardStream {
   claimableAmount: bigint;
   /** Full-precision display (token decimals, last wei/cent). */
   claimableDisplay: string;
+  /** Pool-level availableRewards helper value, not this user's claimable amount. */
+  availableRewardsOnChain: bigint;
   lastClaimAt: number;
   claimUnlockAt: number;
   isClaimLocked: boolean;
@@ -2795,10 +2791,41 @@ export function simulateSetTokenEra(params: {
 }
 
 /**
+ * Mirror Harvester._setRewards(_payToken, lag):
+ *   available         = realBalance - allRewardsOwed
+ *   timeFactor        = lag * eralength
+ *   effectiveDuration = max(Duration, timeFactor)
+ *   rewardPerStamp    = (available * divisor * eralength) / (staked * effectiveDuration)
+ *
+ * `availableRewardsOnChain` is exactly the contract's view of available pool
+ * rewards, not the user's claimable amount.
+ */
+export function simulateRewardPerStamp(params: {
+  availableRewards: bigint;
+  tokenTotalStaked: bigint;
+  eralength: bigint;
+  duration: bigint;
+  lag: bigint;
+}): bigint {
+  if (params.tokenTotalStaked <= 0n) return 0n;
+  const eralength = params.eralength > 0n ? params.eralength : 86400n;
+  const lag = params.lag > 0n ? params.lag : 1n;
+  const timeFactor = lag * eralength;
+  const effectiveDuration = timeFactor > params.duration ? timeFactor : params.duration;
+  if (effectiveDuration <= 0n) return 0n;
+  return (
+    (params.availableRewards * HARVESTER_REWARD_DIVISOR * eralength) /
+    (params.tokenTotalStaked * effectiveDuration)
+  );
+}
+
+/**
  * Mirror Harvester._processSingleTokenClaim accrual loop (without writing state):
  *   for e in [eraAtBlock, endPeriod): rewardsAccrued += eraRate(e) * ARCADESent
  * Historical e < onChainCurrentERA → stored eraRewards[e]
- * Future/unfinalized e ≥ onChainCurrentERA → current rewardPerStamp (setTokenEra seal)
+ * Future/unfinalized e ≥ onChainCurrentERA → projected rewardPerStamp from
+ * Harvester._setRewards(_payToken, lag), because setTokenEra recalculates it
+ * before stamping newly closed eras.
  */
 export function simulateProcessRewardsOwed(params: {
   storedRewardsOwed: bigint;
@@ -2987,6 +3014,7 @@ type StreamOnChainBundle = {
   tokenStartTime: bigint;
   isAdded: boolean;
   tokenTotalStaked: bigint;
+  availableRewards: bigint;
   meta: { name: string; symbol: string; decimals: number };
 };
 
@@ -3002,7 +3030,7 @@ async function readStreamOnChainBundle(
   const address = normalizePayTokenAddress(token);
   const client_ = getPublicClient();
 
-  const [claimTuple, lastClaim, ecoTuple, tokenTotalStaked, meta] = await Promise.all([
+  const [claimTuple, lastClaim, ecoTuple, tokenTotalStaked, availableRewards, meta] = await Promise.all([
     client_.readContract({
       address: harvester,
       abi: harvesterABI,
@@ -3027,6 +3055,12 @@ async function readStreamOnChainBundle(
       functionName: "tokenTotalStaked",
       args: [address],
     }) as Promise<bigint>,
+    client_.readContract({
+      address: harvester,
+      abi: harvesterABI,
+      functionName: "availableRewards",
+      args: [address],
+    }) as Promise<bigint>,
     readRewardTokenMeta(address),
   ]);
 
@@ -3043,6 +3077,7 @@ async function readStreamOnChainBundle(
     tokenStartTime: ecoTuple?.[4] ?? 0n,
     isAdded: Boolean(ecoTuple?.[5]),
     tokenTotalStaked: tokenTotalStaked ?? 0n,
+    availableRewards: availableRewards ?? 0n,
     meta,
   };
 }
@@ -3061,6 +3096,7 @@ function computeStreamEstimateFromBundle(params: {
   applyEraMath: boolean;
   historicalEraRate?: (era: bigint) => bigint;
   endPeriod?: bigint;
+  projectedRewardPerStamp?: bigint;
 }): ClaimableRewardStream {
   const { bundle, globals, nowSec, applyEraMath } = params;
   const decimals = isZeroAddress(bundle.address) ? 18 : bundle.meta.decimals;
@@ -3072,15 +3108,25 @@ function computeStreamEstimateFromBundle(params: {
   let eraMathApplied = false;
 
   if (applyEraMath) {
+    const projected = simulateSetTokenEra({
+      isAdded: bundle.isAdded,
+      startTime: bundle.tokenStartTime,
+      currentERA: bundle.onChainCurrentERA,
+      eralength: globals.eralength,
+      nowSeconds: BigInt(nowSec),
+    });
     endPeriod =
       params.endPeriod ??
-      simulateSetTokenEra({
-        isAdded: bundle.isAdded,
-        startTime: bundle.tokenStartTime,
-        currentERA: bundle.onChainCurrentERA,
+      projected.endPeriod;
+    const projectedRewardPerStamp =
+      params.projectedRewardPerStamp ??
+      simulateRewardPerStamp({
+        availableRewards: bundle.availableRewards,
+        tokenTotalStaked: bundle.tokenTotalStaked,
         eralength: globals.eralength,
-        nowSeconds: BigInt(nowSec),
-      }).endPeriod;
+        duration: globals.duration,
+        lag: projected.erasAdvanced,
+      });
 
     const rateFn =
       params.historicalEraRate ??
@@ -3093,7 +3139,7 @@ function computeStreamEstimateFromBundle(params: {
       eraAtBlock: bundle.eraAtBlock,
       onChainCurrentERA: bundle.onChainCurrentERA,
       endPeriod,
-      rewardPerStamp: bundle.rewardPerStamp,
+      rewardPerStamp: projectedRewardPerStamp,
       historicalEraRate: rateFn,
     });
     estimatedRewardsOwed = sim.estimatedRewardsOwed;
@@ -3122,6 +3168,7 @@ function computeStreamEstimateFromBundle(params: {
     pendingAccruedRaw: pendingAccrued,
     claimableAmount,
     claimableDisplay: formatExactTokenAmount(claimableAmount, decimals),
+    availableRewardsOnChain: bundle.availableRewards,
     lastClaimAt,
     claimUnlockAt,
     isClaimLocked,

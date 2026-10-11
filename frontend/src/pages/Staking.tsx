@@ -54,6 +54,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useNetworkStore } from "@/store/networkStore";
 import {
+  TESTING_MODE,
   canAccessFarm,
   hasLegacyHarvester,
   hasLiveHarvester,
@@ -93,7 +94,6 @@ import {
   formatCompactTokenAmount,
   formatDurationCountdown,
   formatEther,
-  formatExactTokenAmount,
   getPlayerOwners,
   getThirdwebNetwork,
   harvesterClaimsPageRange,
@@ -138,6 +138,7 @@ const STREAM_CHIP_COLORS = [
 ];
 
 const CATEGORY_LABELS: Record<RewardTokenCategory, string> = {
+  stablecoin: "Stablecoins",
   crypto: "Crypto",
   stock: "Stocks",
   etf: "ETFs",
@@ -146,6 +147,7 @@ const CATEGORY_LABELS: Record<RewardTokenCategory, string> = {
 };
 
 const CATEGORY_ORDER: RewardTokenCategory[] = [
+  "stablecoin",
   "crypto",
   "stock",
   "etf",
@@ -421,6 +423,10 @@ function TierCarousel({
 
 function formatArcadeDisplay(amount: bigint, decimals = 18): string {
   return formatCompactTokenAmount(amount, decimals, 2);
+}
+
+function formatEstimatedRewardDisplay(stream?: ClaimableRewardStream | null): string {
+  return `${stream?.claimableDisplay ?? "0"}`;
 }
 
 export default function Staking() {
@@ -1004,7 +1010,7 @@ export default function Staking() {
   }, [account?.address, harvesterLive]);
 
   useEffect(() => {
-    if (!canAccessStaking) {
+    if (!canAccessStaking && !TESTING_MODE) {
       toast.error("Farm unavailable on this network", {
         description: "Switch to a chain with live ProofOfAccess and Harvester contracts.",
       });
@@ -1482,7 +1488,7 @@ export default function Staking() {
       return;
     }
     const tokens = legacyStatus.pendingClaimStreams
-      .filter((s) => !s.isClaimLocked && (s.claimableAmount > 0n || s.rewardsOwedRaw > 0n))
+      .filter((s) => !s.isClaimLocked && (s.claimableAmount > 0n || s.estimatedRewardsOwedRaw > 0n))
       .map((s) => s.address);
     if (tokens.length === 0) {
       const anyLocked = legacyStatus.pendingClaimStreams.some((s) => s.isClaimLocked);
@@ -2397,7 +2403,7 @@ export default function Staking() {
       */}
       {legacyGateActive && legacyStatus && (() => {
         const legacyPendingClaimableCount = legacyStatus.pendingClaimStreams.filter(
-          (s) => !s.isClaimLocked && (s.claimableAmount > 0n || s.rewardsOwedRaw > 0n),
+          (s) => !s.isClaimLocked && (s.claimableAmount > 0n || s.estimatedRewardsOwedRaw > 0n),
         ).length;
         const legacyBusy =
           loadingLegacyStatus ||
@@ -2478,7 +2484,7 @@ export default function Staking() {
                         <span className="shrink-0 font-jetbrains text-xs text-muted-foreground">
                           {s.isClaimLocked
                             ? `Locked · ${formatDurationCountdown(Math.max(0, s.claimUnlockAt - Math.floor(Date.now() / 1000)))}`
-                            : formatExactTokenAmount(s.claimableAmount, s.decimals)}
+                            : formatEstimatedRewardDisplay(s)}
                         </span>
                       </li>
                     ))}
@@ -3017,7 +3023,7 @@ export default function Staking() {
                         "ring-1 ring-amber-500/50",
                     )}
                   >
-                    {r.claimableDisplay} {r.symbol}
+                    {formatEstimatedRewardDisplay(r)} {r.symbol}
                     {r.isRetainedUnsubscribed ? " · claim" : ""}
                   </button>
                 ))
@@ -3182,7 +3188,7 @@ export default function Staking() {
                     {withdrawLock && withdrawLock.stakedBalance > 0n ? (
                       withdrawCountdown > 0 ? (
                         <p className="mt-0.5 font-sora text-[10px] text-amber-200/90">
-                          Timelock{" "}
+                          Timelock {" "}
                           <span className="font-jetbrains font-semibold tabular-nums">
                             {formatDurationCountdown(withdrawCountdown)}
                           </span>
@@ -3209,10 +3215,10 @@ export default function Staking() {
                   {syncStatus?.requiresSync ? (
                     <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-left">
                       <p className="font-sora text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
-                        Sync required
+                        Welcome Back! Sync required.
                       </p>
                       <p className="mt-1 font-sora text-xs text-amber-800 dark:text-amber-100">
-                        Catch up {syncStatus.totalLoopsNeeded} batch transaction{syncStatus.totalLoopsNeeded === 1 ? "" : "s"} before withdrawal.
+                        You've been away a long time. <br/> Catch up with {syncStatus.totalLoopsNeeded} batch transaction{syncStatus.totalLoopsNeeded === 1 ? "" : "s"} before withdrawal.
                       </p>
                     </div>
                   ) : null}
@@ -3270,7 +3276,7 @@ export default function Staking() {
                         Sync required
                       </p>
                       <p className="mt-1 font-sora text-xs text-amber-800 dark:text-amber-100">
-                        {syncStatus.totalLoopsNeeded} gas tx{syncStatus.totalLoopsNeeded === 1 ? "" : "s"} needed to catch up stale claim eras before harvest.
+                        {syncStatus.totalLoopsNeeded} gas tx{syncStatus.totalLoopsNeeded === 1 ? "" : "s"} needed to catch up on claims for harvest.
                       </p>
                       <Button
                         type="button"
@@ -3311,7 +3317,7 @@ export default function Staking() {
                               </span>
                             ) : (
                               <>
-                                {selectedRewardData?.claimableDisplay ?? "0"}{" "}
+                                {formatEstimatedRewardDisplay(selectedRewardData)}{" "}
                                 <span className="font-sora text-sm font-semibold text-white/70">
                                   {selectedRewardData?.symbol ?? ""}
                                 </span>
@@ -3353,7 +3359,7 @@ export default function Staking() {
                                     ) : null}
                                   </span>
                                   <span className="shrink-0 font-jetbrains text-success">
-                                    {r.claimableDisplay}
+                                    {formatEstimatedRewardDisplay(r)}
                                   </span>
                                 </button>
                               </li>
@@ -3366,7 +3372,7 @@ export default function Staking() {
                       {claimableStreams.length === 0
                         ? "Subscribe while farming to unlock streams"
                         : rewardSnapshot?.hasActiveStake
-                          ? `${claimableStreams.length} stream${claimableStreams.length === 1 ? "" : "s"} · era math (active stake)${
+                          ? `${claimableStreams.length} stream${claimableStreams.length === 1 ? "" : "s"} · (active stake)${
                               (rewardSnapshot?.retainedUnsubscribed?.length ?? 0) > 0
                                 ? ` · ${rewardSnapshot!.retainedUnsubscribed.length} prior to claim`
                                 : ""
@@ -3436,8 +3442,7 @@ export default function Staking() {
           <DialogHeader>
             <DialogTitle className="font-cinzel text-lg">Claim rewards</DialogTitle>
             <DialogDescription className="font-sora text-xs text-muted-foreground">
-              Choose which reward streams to harvest. Amounts are estimated with the same
-              era math the Harvester runs on claim — final on-chain accounting settles at
+              Choose which reward streams to harvest. Amounts are estimated so final on-chain accounting settles at
               transaction time. Streams you left after a subscription change stay here
               until their unclaimed rewards are harvested.
             </DialogDescription>
@@ -3477,12 +3482,12 @@ export default function Staking() {
                           </span>
                         </div>
                         <p className="mt-0.5 font-jetbrains text-xs font-semibold text-success">
-                          {stream.claimableDisplay}{" "}
+                          {formatEstimatedRewardDisplay(stream)}{" "}
                           <span className="font-sora text-xs font-medium text-muted-foreground">
                             {stream.symbol}
                           </span>
                           <span className="ml-1 font-sora text-[10px] font-medium text-muted-foreground/80">
-                            est.
+                            user share
                           </span>
                         </p>
                         {stream.isRetainedUnsubscribed ? (
@@ -3586,7 +3591,7 @@ export default function Staking() {
 
       {/* Harvested claim history — userTotalClaimHistory + paginated getUserClaims */}
       <Dialog open={claimHistoryOpen} onOpenChange={setClaimHistoryOpen}>
-        <DialogContent className="max-h-[90dvh] max-w-md gap-2 overflow-y-auto border-border/60 theme-surface-elevated p-3 font-sora sm:max-w-lg sm:p-4">
+        <DialogContent className="flex max-h-[90dvh] max-w-md flex-col gap-2 overflow-hidden border-border/60 theme-surface-elevated p-3 font-sora sm:max-w-lg sm:p-4">
           <DialogHeader>
             <DialogTitle className="font-cinzel text-lg">Claim history</DialogTitle>
             <DialogDescription className="font-sora text-xs text-muted-foreground">
@@ -3617,7 +3622,7 @@ export default function Staking() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-border/60 theme-surface overflow-hidden">
+          <div className="min-h-0 rounded-xl border border-border/60 theme-surface overflow-hidden">
             {loadingClaimHistory ? (
               <div className="flex flex-col items-center justify-center gap-2 py-8">
                 <Loader2 className="h-7 w-7 animate-spin text-amber-500" />
@@ -3632,7 +3637,7 @@ export default function Staking() {
                 </p>
               </div>
             ) : (
-              <ScrollArea className="max-h-[min(42vh,300px)]">
+              <ScrollArea className="h-[min(42vh,300px)]">
                 <ul className="divide-y divide-border/50">
                   {claimHistoryRows.map((row, index) => (
                     <li

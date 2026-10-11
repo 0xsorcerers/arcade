@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { isMainnetWithValidContracts } from "../tools/networkData";
 
 const scrollTo = (id) => {
   const el = document.querySelector(id);

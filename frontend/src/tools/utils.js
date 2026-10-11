@@ -38,7 +38,7 @@ function getTokenContract() {
 }
 
 function getHarvesterContract() {
-  return new Contract(blockchain.harvester_address, harvesterAbi, provider);
+  return new Contract(blockchain.harvester, harvesterAbi, provider);
 }
 
 export async function fetchStakingSnapshot(accountAddress) {
@@ -53,7 +53,7 @@ export async function fetchStakingSnapshot(accountAddress) {
     tokenDecimals: blockchain.decimals,
   };
 
-  if (!hasLiveAddress(blockchain.arcade_address) || !hasLiveAddress(blockchain.harvester_address)) {
+  if (!hasLiveAddress(blockchain.arcade_address) || !hasLiveAddress(blockchain.harvester)) {
     return empty;
   }
 
@@ -65,7 +65,7 @@ export async function fetchStakingSnapshot(accountAddress) {
   const [tokenDecimals, tokenBalance, allowance, stakedBalance, farmTotal, rewards] = await Promise.all([
     token.decimals(),
     token.balanceOf(accountAddress),
-    token.allowance(accountAddress, blockchain.harvester_address),
+    token.allowance(accountAddress, blockchain.harvester),
     harvester.balances(accountAddress),
     farmTotalPromise,
     harvester.claimRewards(accountAddress, blockchain.arcade_address),
@@ -83,7 +83,7 @@ export async function fetchStakingSnapshot(accountAddress) {
 }
 
 function stakingContract() {
-  return getContract({ client, chain: robinhood, address: blockchain.harvester_address, abi: harvesterAbi });
+  return getContract({ client, chain: robinhood, address: blockchain.harvester, abi: harvesterAbi });
 }
 
 function tokenContract() {
@@ -94,7 +94,7 @@ export function prepareArcadeApproval(amount) {
   return prepareContractCall({
     contract: tokenContract(),
     method: "function approve(address spender, uint256 amount) external returns (bool)",
-    params: [blockchain.harvester_address, amount],
+    params: [blockchain.harvester, amount],
   });
 }
 

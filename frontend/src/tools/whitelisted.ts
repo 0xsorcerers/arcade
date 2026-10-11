@@ -1,7 +1,7 @@
 import type { Address } from "viem";
 import { blockchain, ZERO_ADDRESS } from "./networkData";
 
-export type RewardTokenCategory = "crypto" | "stock" | "etf" | "commodity" | "other";
+export type RewardTokenCategory = "stablecoin"| "crypto" | "stock" | "etf" | "commodity" | "other";
 
 export interface WhitelistedRewardToken {
   address: Address;
@@ -18,12 +18,14 @@ export function shortTokenLabel(address: string): string {
 
 export function getWhitelistedRewardTokens(_chainId: number): WhitelistedRewardToken[] {
   const tokens: WhitelistedRewardToken[] = [
-    { address: ZERO_ADDRESS as Address, name: "ETH", type: "crypto" },
+    { address: ZERO_ADDRESS as Address, name: "USD", type: "stablecoin" },
   ];
   // if (arcadeAddress.toLowerCase() !== ZERO_ADDRESS.toLowerCase()) {
   //   tokens.push({ address: arcadeAddress, name: "ARCADE", type: "crypto" });
   // }
 
+  tokens.push({ address: "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a", name: "EURC", type: "stablecoin" });
+  tokens.push({ address: "0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF", name: "Circle BTC", type: "crypto" });
   tokens.push({ address: "0xF4cA5adcc58Ee0aCb3E442a6c5058f381B2F8E96", name: "SoulOfSparta", type: "crypto" });
   tokens.push({ address: "0x4c84B8B50a66bbc512C0154C4a16BA909789A8A3", name: "SpaceX", type: "stock" });
 
@@ -36,7 +38,7 @@ export function getWhitelistedTokensByCategory(chainId: number): Record<RewardTo
       groups[token.type].push(token);
       return groups;
     },
-    { crypto: [], stock: [], etf: [], commodity: [], other: [] },
+    { stablecoin: [], crypto: [], stock: [], etf: [], commodity: [], other: [] },
   );
 }
 
