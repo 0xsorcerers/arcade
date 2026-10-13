@@ -1129,9 +1129,13 @@ export async function getPendingSyncInfo(
       return { token: getAddress(token), unsyncedEras: 0, loopsNeeded: 0, liveCurrentEra: userEra, userEra, maxBatchSize: limits.maxBatchSize };
     }
 
-    const batchSize = limits.maxBatchSize;
+    // Use a smaller batch size for actual sync transactions to avoid gas limits
+    // MAX_BATCH_SIZE (50) is for subscription limits, but sync txs need to be gas-efficient
+    const syncBatchSize = 30; // 30 eras per sync transaction is gas-efficient
+    // Contract allows inline era progression up to MAX_ERA (50 eras) via requireSynced modifier
+    // Any eras beyond that need explicit syncMyClaim calls
     const erasBeyondInlineLimit = Math.max(0, unsyncedEras - limits.maxInlineEras);
-    const loopsNeeded = batchSize > 0 ? Math.ceil(erasBeyondInlineLimit / batchSize) : 0;
+    const loopsNeeded = syncBatchSize > 0 ? Math.ceil(erasBeyondInlineLimit / syncBatchSize) : 0;
     const liveCurrentEra = userEra + unsyncedEras;
 
     return {
@@ -1140,7 +1144,7 @@ export async function getPendingSyncInfo(
       loopsNeeded,
       liveCurrentEra,
       userEra,
-      maxBatchSize: batchSize,
+      maxBatchSize: syncBatchSize,
     };
   } catch (err) {
     console.error("getPendingSyncInfo failed", token, err);

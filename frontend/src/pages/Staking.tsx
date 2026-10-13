@@ -767,7 +767,7 @@ export default function Staking() {
         for (const entry of pending) {
           for (let i = 0; i < entry.loopsNeeded; i++) {
             const tx = await sendSyncTx(
-              prepareHarvesterSyncClaim(entry.token, BigInt(entry.maxBatchSize || 50)),
+              prepareHarvesterSyncClaim(entry.token, BigInt(entry.maxBatchSize || 30)),
             );
             await waitForReceipt({
               client,
@@ -3009,10 +3009,6 @@ export default function Staking() {
               transition={{ delay: 0.25 }}
               className="flex shrink-0 flex-wrap items-center gap-1.5 rounded-xl border border-border/50 theme-surface px-2.5 py-1.5 lg:px-3 lg:py-1"
             >
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="font-sora text-xs font-medium tracking-wide text-muted-foreground">
-                Viewing · {tier.title}
-              </span>
               <span
                 className={cn(
                   "rounded-full bg-gradient-to-r px-2.5 py-0.5 font-orbitron text-[10px] font-bold text-white shadow",
@@ -3020,6 +3016,10 @@ export default function Staking() {
                 )}
               >
                 {tier.contractName}
+              </span>
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="font-sora text-xs font-medium tracking-wide text-muted-foreground">
+                Viewing · {tier.title}
               </span>
               {claimableStreams.length === 0 ? (
                 <span className="font-sora text-[11px] text-muted-foreground">
@@ -3250,7 +3250,7 @@ export default function Staking() {
                         Welcome Back! Sync required.
                       </p>
                       <p className="mt-1 font-sora text-xs text-amber-800 dark:text-amber-100">
-                        You've been away a long time. <br/> Catch up with {syncStatus.totalLoopsNeeded} batch transaction{syncStatus.totalLoopsNeeded === 1 ? "" : "s"} before withdrawal.
+                        You've been away a long time. <br/> Catch up with {syncStatus.totalLoopsNeeded} monthly claim{syncStatus.totalLoopsNeeded === 1 ? "" : "s"} before withdrawal.
                       </p>
                     </div>
                   ) : null}
@@ -3523,7 +3523,7 @@ export default function Staking() {
                             {stream.symbol}
                           </span>
                           <span className="ml-1 font-sora text-[10px] font-medium text-muted-foreground/80">
-                            user share
+                            est.
                           </span>
                         </p>
                         {stream.isRetainedUnsubscribed ? (
@@ -4124,10 +4124,11 @@ export default function Staking() {
                         <Fuel className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                         <span>
                           You need enough{" "}
-                          <strong>{selectedNetwork.symbol}</strong> for the mint fee plus gas for
+                          <span style={{color: "gold"}}><strong>{selectedNetwork.symbol}</strong></span> for the mint fee plus <span style={{color: "gold"}}>gas for
                           {mintReadiness.needsApproval
                             ? " two wallet popups (approve + mint)"
                             : " the mint transaction"}
+                            </span>
                           . Keep a little extra so the txs don&apos;t fail.
                         </span>
                       </p>
@@ -4135,16 +4136,16 @@ export default function Staking() {
                         <p className="flex items-start gap-2 font-sora">
                           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
                           <span>
-                            First you&apos;ll <strong>approve</strong> the ProofOfAccess contract to
+                            First you&apos;ll <span style={{color: "gold"}}><strong>approve</strong></span> the ProofOfAccess contract to
                             spend{" "}
-                            <strong>
+                            <span style={{color: "gold"}}><strong>
                               {formatArcadeDisplay(
                                 mintReadiness.config.burnAmount,
                                 mintReadiness.arcadeDecimals,
                               )}{" "}
                               ARCADE
-                            </strong>
-                            . Those tokens are burned to mint this tier. Confirm the amount in your
+                            </strong></span>
+                            . Those tokens are <span style={{color: "gold"}}>burned to mint this tier</span>. Confirm the amount in your
                             wallet carefully.
                           </span>
                         </p>
@@ -4512,17 +4513,17 @@ export default function Staking() {
                     <p className="flex items-start gap-2 font-sora text-foreground">
                       <Fuel className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <span>
-                        You need enough <strong>{selectedNetwork.symbol}</strong> for{" "}
-                        <strong>{farmPlan?.stepLabels.join(" → ") || "deposit"}</strong>
+                        You need enough <span style={{color: "gold"}}><strong>{selectedNetwork.symbol}</strong></span> for{" "}
+                        <span style={{color: "gold"}}><strong>{farmPlan?.stepLabels.join(" → ") || "deposit"}</strong></span>
                         . Changing streams always adds a subscribe confirm. Extra pre-approval is
-                        fine — we skip approve when allowance covers the deposit.
+                        fine — we <span style={{color: "gold"}}>skip</span> approve when allowance covers the deposit.
                       </span>
                     </p>
                     {farmPlan?.needsApproval ? (
                       <p className="flex items-start gap-2 font-sora text-foreground">
                         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
                         <span>
-                          You&apos;ll <strong>approve</strong> Harvester for at least the deposit
+                          You&apos;ll <span style={{color: "gold"}}><strong>approve</strong></span> Harvester for at least the deposit
                           amount
                           {farmPlan.needsSubscribe ? ", then subscribe, " : ", "}
                           then deposit. Approving more than needed is OK for future farms.
@@ -4552,7 +4553,7 @@ export default function Staking() {
                         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                         <span>
                           Since reward streams differ from your on-chain list — a{" "}
-                          <strong>subscribeToStream</strong> confirmation is included before deposit.
+                          <span style={{color: "gold"}}><strong>resubscription</strong></span> confirmation is included before deposit.
                         </span>
                       </p>
                     )}

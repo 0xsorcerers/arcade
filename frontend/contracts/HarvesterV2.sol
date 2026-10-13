@@ -265,9 +265,10 @@ contract Harvester is Ownable, ReentrancyGuard {
     // ==========================================
 
     /**
-     * @dev Advances closed eras, calculates rate, stamps it, and immediately
-     *      books the FULL pool-wide liability into allRewardsOwed.
-     */
+    * @dev CHUNKED ERA PROGRESSION:
+    * Advances closed eras incrementally up to MAX_ERA steps per transaction 
+    * to prevent out-of-gas errors over massive time gaps.
+    */
     function setTokenEra(address _payToken) internal {
         TokenEconomy storage tEco = tokenEconomics[_payToken];
         if (!tEco.isAdded) return;
@@ -277,21 +278,20 @@ contract Harvester is Ownable, ReentrancyGuard {
 
         if (totalErasElapsed <= tEco.currentERA) return;
 
-        uint256 lag = totalErasElapsed - tEco.currentERA;
+        uint256 diff = totalErasElapsed - tEco.currentERA;
+        // BOUND BY MAX_ERA: Process in safe chunks (max 50 eras per tx)
+        uint256 lag = diff > MAX_ERA ? MAX_ERA : diff;
         uint256 staked = tokenTotalStaked[_payToken];
 
-        // Calculate rate with effectiveDuration
+        // Calculate rate with effectiveDuration using this batch lag
         _setRewards(_payToken, lag);
 
-        // Stamp the rate across all missing eras
+        // Stamp the rate across this batch of eras
         for (uint256 i = 0; i < lag; i++) {
             eraRewards[_payToken][tEco.currentERA] = tEco.rewardPerStamp;
             tEco.currentERA++;
         }
 
-        // ===== FULL POOL LIABILITY BOOKING =====
-        // This is the key precision change.
-        // We know the exact total staked weight, so we can reserve the entire liability now.
         if (staked > 0 && tEco.rewardPerStamp > 0) {
             uint256 fullLiability = (tEco.rewardPerStamp * lag * staked) / divisor;
             tEco.allRewardsOwed += fullLiability;
