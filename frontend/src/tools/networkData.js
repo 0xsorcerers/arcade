@@ -30,7 +30,7 @@ export const arcTestnet = Object.freeze({
   tokenName: "Meme Arcade",
   tokenSymbol: "ARCADE",
   arcade_address: "0x60566859A4355a321b5f2C9e25AB3f15cD5DCD11",
-  harvester: "0x98009206b47d9f81c6aB1252A73dD4C5A9691dF5",
+  harvester: "0x972eBf294FA2E96793789076554A543f43BD75d3", // 0xaad53593667ea033E5D19Dc84173ae5b39e0eA40 v2_1 (multi SetRewards gone)| 0x5aD80CD77daeF0fD54d2e31705cEf32BECd23A93 v2_2 | 0xDb4FDec1556617904A22Bcf0fe13b6496764CacA v2_1
   proof_of_access: "0xa0C4F4B66238FdaC52b0b42Fc7fCd243FdF66Cb7",
   legacyHarvester: ZERO_ADDRESS,
 });

@@ -61,7 +61,9 @@ contract Harvester is Ownable, ReentrancyGuard {
         uint256 currentERA;
         uint256 startTime;
         bool isAdded;
+        uint256 lockedDiff;        // Locks the total missing gap during multi-tx catch-ups
     }
+
     mapping(address => TokenEconomy) public tokenEconomics;
     mapping(address => mapping(uint256 => uint256)) public eraRewards;
 
@@ -265,10 +267,9 @@ contract Harvester is Ownable, ReentrancyGuard {
     // ==========================================
 
     /**
-    * @dev CHUNKED ERA PROGRESSION:
-    * Advances closed eras incrementally up to MAX_ERA steps per transaction 
-    * to prevent out-of-gas errors over massive time gaps.
-    */
+     * @dev Advances closed eras, calculates rate, stamps it, and immediately
+     *      books the FULL pool-wide liability into allRewardsOwed.
+     */
     function setTokenEra(address _payToken) internal {
         TokenEconomy storage tEco = tokenEconomics[_payToken];
         if (!tEco.isAdded) return;
@@ -276,26 +277,52 @@ contract Harvester is Ownable, ReentrancyGuard {
         uint256 timeElapsed = block.timestamp - tEco.startTime;
         uint256 totalErasElapsed = timeElapsed / eralength;
 
-        if (totalErasElapsed <= tEco.currentERA) return;
+        if (totalErasElapsed <= tEco.currentERA && tEco.lockedDiff == 0) return;
 
-        uint256 diff = totalErasElapsed - tEco.currentERA;
-        // BOUND BY MAX_ERA: Process in safe chunks (max 50 eras per tx)
-        uint256 lag = diff > MAX_ERA ? MAX_ERA : diff;
-        uint256 staked = tokenTotalStaked[_payToken];
+        uint256 rawLag = totalErasElapsed > tEco.currentERA ? totalErasElapsed - tEco.currentERA : 0;
+        if (rawLag == 0 && tEco.lockedDiff == 0) return;
 
-        // Calculate rate with effectiveDuration using this batch lag
-        _setRewards(_payToken, lag);
+        // CASE 1: Massive backlog exceeding MAX_ERA -> engage V2.2 lockedDiff chunking flow
+        if (rawLag > MAX_ERA || tEco.lockedDiff > 0) {
+            if (tEco.lockedDiff == 0) {
+                tEco.lockedDiff = rawLag;
+                _setRewards(_payToken, tEco.lockedDiff); // Rate locked to total span
+            }
 
-        // Stamp the rate across this batch of eras
-        for (uint256 i = 0; i < lag; i++) {
-            eraRewards[_payToken][tEco.currentERA] = tEco.rewardPerStamp;
-            tEco.currentERA++;
-        }
+            uint256 lag = tEco.lockedDiff > MAX_ERA ? MAX_ERA : tEco.lockedDiff;
+            uint256 staked = tokenTotalStaked[_payToken];
 
-        if (staked > 0 && tEco.rewardPerStamp > 0) {
-            uint256 fullLiability = (tEco.rewardPerStamp * lag * staked) / divisor;
-            tEco.allRewardsOwed += fullLiability;
-            emit FullLiabilityBooked(_payToken, fullLiability, lag);
+            for (uint256 i = 0; i < lag; i++) {
+                eraRewards[_payToken][tEco.currentERA] = tEco.rewardPerStamp;
+                tEco.currentERA++;
+            }
+
+            if (staked > 0 && tEco.rewardPerStamp > 0) {
+                uint256 fullLiability = (tEco.rewardPerStamp * lag * staked) / divisor;
+                tEco.allRewardsOwed += fullLiability;
+                emit FullLiabilityBooked(_payToken, fullLiability, lag);
+            }
+
+            tEco.lockedDiff -= lag;
+        } 
+        // CASE 2: Normal current eras (within MAX_ERA) -> use pure V2.1 direct flow
+        else {
+            uint256 lag = rawLag;
+            uint256 staked = tokenTotalStaked[_payToken];
+
+            // Direct V2.1 rate calculation
+            _setRewards(_payToken, lag);
+
+            for (uint256 i = 0; i < lag; i++) {
+                eraRewards[_payToken][tEco.currentERA] = tEco.rewardPerStamp;
+                tEco.currentERA++;
+            }
+
+            if (staked > 0 && tEco.rewardPerStamp > 0) {
+                uint256 fullLiability = (tEco.rewardPerStamp * lag * staked) / divisor;
+                tEco.allRewardsOwed += fullLiability;
+                emit FullLiabilityBooked(_payToken, fullLiability, lag);
+            }
         }
     }
 

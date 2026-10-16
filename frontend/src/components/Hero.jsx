@@ -6,7 +6,7 @@ import { TESTING_MODE } from "../tools/networkData";
 const scrollTo = (id) => {
   const el = document.querySelector(id);
   if (el) el.scrollIntoView({ behavior: "smooth" });
-}; 
+};
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -63,8 +63,7 @@ export const Hero = () => (
         transition={{ delay: 0.5, duration: 0.6 }}
         className="mt-6 max-w-lg font-body text-base leading-relaxed text-stone-300 sm:text-lg"
       >
-        Meme Arcade gives the strongest meme communities a crypto money game where they can
-        win big in their own memecoins — the lowest-risk to high-reward ratio on the planet.
+        The lowest-risk to high-reward ratio on the planet.
       </motion.p>
 
       <motion.div
@@ -91,10 +90,10 @@ export const Hero = () => (
         <button
           disabled
           data-testid="trade-soon-btn"
-          title="Trading coming soon"
+          title={TESTING_MODE ? "Initial Bundle Offering" : "Trade"}
           className="flex cursor-not-allowed items-center gap-2 border border-white/10 px-7 py-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-stone-600"
         >
-          Trade <span className="text-[9px] tracking-[0.2em] text-stone-700">Soon</span>
+          {TESTING_MODE ? "Contribute" : "Trade"} <span className="text-[9px] tracking-[0.2em] text-stone-700">Soon</span>
         </button>
       </motion.div>
     </div>
